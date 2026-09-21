@@ -48,6 +48,39 @@
 <h1 class="text-3xl md:text-4xl font-normal mb-8">All Products</h1>
 
 
+<!-- filter div-->
+<div class="flex flex-col md:flex-row flex-wrap gap-3 mb-6">
+  <input
+    id="search-input"
+    type="text"
+    placeholder="Search name or code"
+    class="border border-gray-300 px-3 py-2 text-sm w-full md:w-56 bg-transparent"
+  >
+
+  <select id="series-select" class="border border-gray-300 px-3 py-2 text-sm bg-transparent">
+    <option value="all">All series</option>
+    <option value="Wood">Wood</option>
+    <option value="Metallic">Metallic</option>
+    <option value="Leather">Leather</option>
+    <option value="Grand">Grand</option>
+    <option value="Villa">Villa</option>
+    <option value="Smart">Smart</option>
+  </select>
+
+  <select id="sort-select" class="border border-gray-300 px-3 py-2 text-sm bg-transparent">
+    <option value="default">Sort</option>
+    <option value="price-asc">Price: low to high</option>
+    <option value="price-desc">Price: high to low</option>
+    <option value="name-asc">Name: A–Z</option>
+  </select>
+
+  <label class="flex items-center gap-2 text-sm">
+    <input id="in-stock-only" type="checkbox">
+    In stock only
+  </label>
+</div>
+
+<!-- products from API -->
     <p data-product-status class="text-sm text-gray-500 mb-4"></p>
     <div id="product-grid" class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6">
     </div>
