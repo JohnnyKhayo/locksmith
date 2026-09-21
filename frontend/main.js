@@ -105,4 +105,34 @@ if (series) series.addEventListener("change", showProducts);
 if (sort) sort.addEventListener("change", showProducts);
 if (inStock) inStock.addEventListener("change", showProducts);
 
+// dark & light theme functionality
+function setTheme(name) {
+  if (name === "dark") {
+    document.body.classList.add("dark-theme");
+  } else {
+    document.body.classList.remove("dark-theme");
+  }
+  localStorage.setItem("theme", name);
+}
+
+const lightBtn = document.querySelector("#light-btn");
+const darkBtn = document.querySelector("#dark-btn");
+
+if (lightBtn) {
+  lightBtn.addEventListener("click", function () {
+    setTheme("light");
+  });
+}
+
+if (darkBtn) {
+  darkBtn.addEventListener("click", function () {
+    setTheme("dark");
+  });
+}
+
+const savedTheme = localStorage.getItem("theme");
+if (savedTheme === "dark") {
+  setTheme("dark");
+}
+
 loadProducts();
