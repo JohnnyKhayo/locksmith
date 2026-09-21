@@ -1,7 +1,9 @@
 const API = "http://localhost:3001/api/products";
 
+let allProducts = [];
+
 function formatPrice(price) {
-  return `KSh${Number(price).toLocaleString()}.00`;
+  return "KSh" + Number(price).toLocaleString() + ".00";
 }
 
 function productCard(product) {
@@ -12,42 +14,95 @@ function productCard(product) {
       <p class="text-sm font-medium">${product.name}</p>
       <p class="text-xs text-gray-500 mb-1">${product.series} Series</p>
       <p class="text-sm font-medium mt-2 mb-3">${formatPrice(product.price)}</p>
-      <button class="w-full border border-gray-300 py-2 text-sm" disabled="${soldOut}">
+      <button class="w-full border border-gray-300 py-2 text-sm" ${soldOut ? "disabled" : ""}>
         ${soldOut ? "Sold out" : "Add to cart"}
       </button>
     </div>
   `;
 }
 
-async function loadProducts() {
+function showProducts() {
   const featured = document.querySelector("#featured-grid");
   const all = document.querySelector("#product-grid");
   const status = document.querySelector("[data-product-status]");
 
-  if (!featured && !all) return;
+  if (featured) {
+    const list = allProducts.filter(function (p) {
+      return p.featured;
+    });
+    featured.innerHTML = list.map(productCard).join("");
+  }
 
+  if (!all) return;
+
+  const search = document.querySelector("#search-input");
+  const series = document.querySelector("#series-select");
+  const sort = document.querySelector("#sort-select");
+  const inStock = document.querySelector("#in-stock-only");
+
+  const searchText = search ? search.value.toLowerCase() : "";
+  const seriesValue = series ? series.value : "all";
+  const sortValue = sort ? sort.value : "default";
+  const stockOnly = inStock ? inStock.checked : false;
+
+  let list = allProducts.filter(function (p) {
+    const text = (p.name + " " + p.sku).toLowerCase();
+    const okSearch = text.indexOf(searchText) !== -1;
+    const okSeries = seriesValue === "all" || p.series === seriesValue;
+    const okStock = !stockOnly || p.stock > 0;
+    return okSearch && okSeries && okStock;
+  });
+
+  if (sortValue === "price-asc") {
+    list.sort(function (a, b) {
+      return a.price - b.price;
+    });
+  }
+  if (sortValue === "price-desc") {
+    list.sort(function (a, b) {
+      return b.price - a.price;
+    });
+  }
+  if (sortValue === "name-asc") {
+    list.sort(function (a, b) {
+      return a.name.localeCompare(b.name);
+    });
+  }
+
+  if (list.length === 0) {
+    all.innerHTML = "<p>No products match your filters.</p>";
+  } else {
+    all.innerHTML = list.map(productCard).join("");
+  }
+
+  if (status) {
+    status.textContent = "Showing " + list.length + " of " + allProducts.length + " locks";
+  }
+}
+
+async function loadProducts() {
+  const status = document.querySelector("[data-product-status]");
   try {
     const response = await fetch(API);
     if (!response.ok) throw new Error("Could not load products");
-    const products = await response.json();
-
-    if (featured) {
-      featured.innerHTML = products
-        .filter((p) => p.featured)
-        .map(productCard)
-        .join("");
-    }
-    if (all) {
-      all.innerHTML = products.map(productCard).join("");
-    }
-    if (status) status.textContent = `Showing ${products.length} locks`;
+    allProducts = await response.json();
+    showProducts();
   } catch (error) {
     console.error(error);
     if (status) {
-      status.textContent =
-        "Could not load products. Start the API: node server.js";
+      status.textContent = "Could not load products. Start the API: node server.js";
     }
   }
 }
+
+const search = document.querySelector("#search-input");
+const series = document.querySelector("#series-select");
+const sort = document.querySelector("#sort-select");
+const inStock = document.querySelector("#in-stock-only");
+
+if (search) search.addEventListener("input", showProducts);
+if (series) series.addEventListener("change", showProducts);
+if (sort) sort.addEventListener("change", showProducts);
+if (inStock) inStock.addEventListener("change", showProducts);
 
 loadProducts();
