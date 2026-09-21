@@ -135,4 +135,18 @@ if (savedTheme === "dark") {
   setTheme("dark");
 }
 
+// country/region dropdown
+const countrySelect = document.querySelector("#country-select");
+
+if (countrySelect) {
+  const savedCountry = localStorage.getItem("country");
+  if (savedCountry) {
+    countrySelect.value = savedCountry;
+  }
+
+  countrySelect.addEventListener("change", function () {
+    localStorage.setItem("country", countrySelect.value);
+  });
+}
+
 loadProducts();
