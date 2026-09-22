@@ -304,7 +304,7 @@ document.addEventListener("click", function (event) {
 
 showCartCount();
 
-
+// form
 function showError(id, message) {
   const box = document.querySelector("#" + id);
   if (box) box.textContent = message;
@@ -357,17 +357,37 @@ function formIsValid() {
 }
 
 const contactForm = document.querySelector("#contact-form");
-
 if (contactForm) {
   contactForm.addEventListener("submit", function (event) {
     event.preventDefault();
+
     const okBox = document.querySelector("#form-ok");
+    const sendBtn = contactForm.querySelector("button[type='submit']");
+
     if (!formIsValid()) {
       if (okBox) okBox.textContent = "";
       return;
     }
-    if (okBox) okBox.textContent = "Form looks good. We will save it in the next step.";
+
+    sendBtn.disabled = true;
+    sendBtn.textContent = "Sending...";
+    if (okBox) okBox.textContent = "";
+
+    const enquiry = {
+      name: document.querySelector("#name").value.trim(),
+      email: document.querySelector("#email").value.trim(),
+      phone: document.querySelector("#phone").value.trim(),
+      subject: document.querySelector("#subject").value,
+      comment: document.querySelector("#comment").value.trim()
+    };
+
+    setTimeout(function () {
+      localStorage.setItem("enquiry", JSON.stringify(enquiry));
+      sendBtn.disabled = false;
+      sendBtn.textContent = "Send";
+      contactForm.reset();
+      if (okBox) okBox.textContent = "Message sent. We will get back to you.";
+    }, 1500);
   });
 }
-
 loadProducts();
