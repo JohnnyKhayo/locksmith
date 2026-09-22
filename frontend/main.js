@@ -11,15 +11,15 @@ function productCard(product) {
   const soldOut = product.stock <= 0;
   return `
     <div>
-      <img src="${product.image}" alt="${product.name}" class="w-full h-64 object-cover mb-3">
-      <p class="text-sm font-medium">${product.name}</p>
+      <a href="product.html?id=${product.id}">
+        <img src="${product.image}" alt="${product.name}" class="w-full h-64 object-cover mb-3 rounded-lg">
+        <p class="text-sm font-medium">${product.name}</p>
+      </a>
       <p class="text-xs text-gray-500 mb-1">${product.series} Series</p>
       <p class="text-sm font-medium mt-2 mb-3">${formatPrice(product.price)}</p>
-      
-      
       <button
         type="button"
-        class="add-cart-btn w-full border border-gray-300 py-2 text-sm"
+        class="add-cart-btn w-full border border-gray-300 py-2 text-sm rounded-lg"
         data-id="${product.id}"
         ${soldOut ? "disabled" : ""}
       >
@@ -28,7 +28,6 @@ function productCard(product) {
     </div>
   `;
 }
-
 // Draw products on the page
 function showProducts() {
   const featured = document.querySelector("#featured-grid");
@@ -390,4 +389,50 @@ if (contactForm) {
     }, 1500);
   });
 }
+
+// Product detail page
+async function loadOneProduct() {
+  const box = document.querySelector("#product-detail");
+  if (!box) return;
+
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get("id");
+
+  if (!id) {
+    box.innerHTML = "<p>No product selected.</p>";
+    return;
+  }
+
+  try {
+    const response = await fetch(API);
+    if (!response.ok) throw new Error("bad response");
+    const products = await response.json();
+    const p = products.find(function (item) {
+      return String(item.id) === String(id);
+    });
+
+    if (!p) {
+      box.innerHTML = "<p>Product not found.</p>";
+      return;
+    }
+
+    box.innerHTML = `
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <img src="${p.image}" alt="${p.name}" class="w-full object-cover">
+        <div>
+          <p class="text-sm mb-2">${p.series} Series · ${p.sku}</p>
+          <h1 class="text-3xl mb-4">${p.name}</h1>
+          <p class="text-xl mb-4">${formatPrice(p.price)}</p>
+          <p class="mb-4">${p.description}</p>
+          <p class="mb-6">${p.stock > 0 ? "In stock" : "Sold out"}</p>
+          <a href="ourproducts.html" class="underline">Back to shop</a>
+        </div>
+      </div>
+    `;
+  } catch (error) {
+    box.innerHTML = "<p>Could not load product. Start the API.</p>";
+  }
+}
+
+loadOneProduct();
 loadProducts();
