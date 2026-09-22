@@ -5,6 +5,7 @@ let allProducts = [];
 function formatPrice(price) {
   return "KSh" + Number(price).toLocaleString() + ".00";
 }
+// Build the HTML for one product card
 
 function productCard(product) {
   const soldOut = product.stock <= 0;
@@ -21,6 +22,7 @@ function productCard(product) {
   `;
 }
 
+// Draw products on the page
 function showProducts() {
   const featured = document.querySelector("#featured-grid");
   const all = document.querySelector("#product-grid");
@@ -35,6 +37,7 @@ function showProducts() {
 
   if (!all) return;
 
+    // Read filter controls
   const search = document.querySelector("#search-input");
   const series = document.querySelector("#series-select");
   const sort = document.querySelector("#sort-select");
@@ -45,6 +48,8 @@ function showProducts() {
   const sortValue = sort ? sort.value : "default";
   const stockOnly = inStock ? inStock.checked : false;
 
+    // Keep products that match search, series, and stock
+
   let list = allProducts.filter(function (p) {
     const text = (p.name + " " + p.sku).toLowerCase();
     const okSearch = text.indexOf(searchText) !== -1;
@@ -52,6 +57,8 @@ function showProducts() {
     const okStock = !stockOnly || p.stock > 0;
     return okSearch && okSeries && okStock;
   });
+
+    // Sort the list if the user picked a sort option
 
   if (sortValue === "price-asc") {
     list.sort(function (a, b) {
@@ -69,6 +76,8 @@ function showProducts() {
     });
   }
 
+  // Put cards on the page, or a short message if nothing matches
+
   if (list.length === 0) {
     all.innerHTML = "<p>No products match your filters.</p>";
   } else {
@@ -80,6 +89,7 @@ function showProducts() {
   }
 }
 
+// Get products from the API, then draw them
 async function loadProducts() {
   const status = document.querySelector("[data-product-status]");
   try {
@@ -95,6 +105,7 @@ async function loadProducts() {
   }
 }
 
+// When the user types or changes a filter, draw the list again
 const search = document.querySelector("#search-input");
 const series = document.querySelector("#series-select");
 const sort = document.querySelector("#sort-select");
@@ -148,5 +159,26 @@ if (countrySelect) {
     localStorage.setItem("country", countrySelect.value);
   });
 }
+
+// open hours functionality
+function showOpenHours() {
+  const status = document.querySelector("#open-status");
+  if (!status) return;
+
+  const now = new Date();
+  const eatHour = now.getUTCHours() + 3;
+  const day = now.getUTCDay();
+
+  const isWeekday = day >= 1 && day <= 6;
+  const isOpenHour = eatHour >= 7 && eatHour < 18;
+
+  if (isWeekday && isOpenHour) {
+    status.textContent = "Open now";
+  } else {
+    status.textContent = "Closed, we reply next business day";
+  }
+}
+
+showOpenHours();
 
 loadProducts();
