@@ -16,7 +16,7 @@ function productCard(product) {
       <p class="text-xs text-gray-500 mb-1">${product.series} Series</p>
       <p class="text-sm font-medium mt-2 mb-3">${formatPrice(product.price)}</p>
       
-    
+      
       <button
         type="button"
         class="add-cart-btn w-full border border-gray-300 py-2 text-sm"
@@ -304,5 +304,70 @@ document.addEventListener("click", function (event) {
 
 showCartCount();
 
+
+function showError(id, message) {
+  const box = document.querySelector("#" + id);
+  if (box) box.textContent = message;
+}
+
+function clearErrors() {
+  showError("name-error", "");
+  showError("email-error", "");
+  showError("phone-error", "");
+  showError("subject-error", "");
+  showError("comment-error", "");
+}
+
+function formIsValid() {
+  clearErrors();
+  let ok = true;
+
+  const name = document.querySelector("#name").value.trim();
+  const email = document.querySelector("#email").value.trim();
+  const phone = document.querySelector("#phone").value.trim();
+  const subject = document.querySelector("#subject").value;
+  const comment = document.querySelector("#comment").value.trim();
+
+  if (name.length < 2) {
+    showError("name-error", "Please enter your name");
+    ok = false;
+  }
+
+  if (email.indexOf("@") === -1) {
+    showError("email-error", "Please enter a valid email");
+    ok = false;
+  }
+
+  if (phone.length < 10) {
+    showError("phone-error", "Please enter a phone number");
+    ok = false;
+  }
+
+  if (subject === "") {
+    showError("subject-error", "Please choose a subject");
+    ok = false;
+  }
+
+  if (comment.length < 10) {
+    showError("comment-error", "Please write a longer comment");
+    ok = false;
+  }
+
+  return ok;
+}
+
+const contactForm = document.querySelector("#contact-form");
+
+if (contactForm) {
+  contactForm.addEventListener("submit", function (event) {
+    event.preventDefault();
+    const okBox = document.querySelector("#form-ok");
+    if (!formIsValid()) {
+      if (okBox) okBox.textContent = "";
+      return;
+    }
+    if (okBox) okBox.textContent = "Form looks good. We will save it in the next step.";
+  });
+}
 
 loadProducts();

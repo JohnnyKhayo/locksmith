@@ -54,6 +54,9 @@
 </header>
 
   <hr class="border-gray-200">
+<p id="offer-line" class="text-center text-sm py-2">
+  Spend KSh 100,000 or more and get 10% off
+</p>
 
 
   <main>
@@ -116,20 +119,46 @@
         Expect a quick response when you reach out.
       </p>
 
-      <form action="#" method="post" class="space-y-5">
-         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-          <input type="text" name="name" placeholder="Name" required
-            class="w-full border border-gray-300 px-4 py-3 focus:outline-none focus:border-black">
 
-          <input type="email" name="email" placeholder="Email *" required
-            class="w-full border border-gray-300 px-4 py-3 focus:outline-none focus:border-black">
+            <form id="contact-form" class="space-y-5">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div>
+            <input id="name" type="text" name="name" placeholder="Name"
+              class="w-full border border-gray-300 px-4 py-3 focus:outline-none focus:border-black">
+            <p id="name-error" class="text-sm text-red-600 mt-1"></p>
+          </div>
+          <div>
+            <input id="email" type="email" name="email" placeholder="Email"
+              class="w-full border border-gray-300 px-4 py-3 focus:outline-none focus:border-black">
+            <p id="email-error" class="text-sm text-red-600 mt-1"></p>
+          </div>
         </div>
 
-        <input type="tel" name="phone" placeholder="Phone number"
-          class="w-full border border-gray-300 px-4 py-3 focus:outline-none focus:border-black">
+        <div>
+          <input id="phone" type="tel" name="phone" placeholder="Phone number"
+            class="w-full border border-gray-300 px-4 py-3 focus:outline-none focus:border-black">
+          <p id="phone-error" class="text-sm text-red-600 mt-1"></p>
+        </div>
 
-    <textarea name="comment" placeholder="Comment"
-          class="w-full border border-gray-300 px-4 py-3 focus:outline-none focus:border-black resize-none"></textarea>
+        <div>
+          <select id="subject" name="subject"
+            class="w-full border border-gray-300 px-4 py-3 bg-transparent focus:outline-none focus:border-black">
+            <option value="">Subject</option>
+            <option value="advice">Product advice</option>
+            <option value="install">Installation</option>
+            <option value="bulk">Bulk order</option>
+            <option value="other">Other</option>
+          </select>
+          <p id="subject-error" class="text-sm text-red-600 mt-1"></p>
+        </div>
+
+        <div>
+          <textarea id="comment" name="comment" placeholder="Comment"
+            class="w-full border border-gray-300 px-4 py-3 focus:outline-none focus:border-black resize-none"></textarea>
+          <p id="comment-error" class="text-sm text-red-600 mt-1"></p>
+        </div>
+
+        <p id="form-ok" class="text-sm"></p>
 
         <button type="submit" class="bg-black text-white px-10 py-3 hover:bg-gray-800 transition">
           Send
