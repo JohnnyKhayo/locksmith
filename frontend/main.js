@@ -181,4 +181,36 @@ function showOpenHours() {
 
 showOpenHours();
 
+// cookie functionality
+function setCookie(name, value, days) {
+  const date = new Date();
+  date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+  document.cookie = name + "=" + value + ";expires=" + date.toUTCString() + ";path=/";
+}
+
+function getCookie(name) {
+  const cookies = document.cookie.split(";");
+  for (let i = 0; i < cookies.length; i++) {
+    const part = cookies[i].trim();
+    if (part.indexOf(name + "=") === 0) {
+      return part.slice(name.length + 1);
+    }
+  }
+  return "";
+}
+
+const banner = document.querySelector("#cookie-banner");
+const acceptBtn = document.querySelector("#cookie-accept");
+
+if (banner && getCookie("cookiesAccepted") !== "yes") {
+  banner.style.display = "block";
+}
+
+if (acceptBtn) {
+  acceptBtn.addEventListener("click", function () {
+    setCookie("cookiesAccepted", "yes", 7);
+    banner.style.display = "none";
+  });
+}
+
 loadProducts();
