@@ -213,4 +213,26 @@ if (acceptBtn) {
   });
 }
 
+// search header icon
+const headerSearch = document.querySelector("#header-search");
+
+if (headerSearch) {
+  headerSearch.addEventListener("keydown", function (event) {
+    if (event.key === "Enter") {
+      const text = headerSearch.value;
+      window.location.href = "ourproducts.html?search=" + encodeURIComponent(text);
+    }
+  });
+}
+
+const pageSearch = document.querySelector("#search-input");
+
+if (pageSearch) {
+  const params = new URLSearchParams(window.location.search);
+  const searchWord = params.get("search");
+  if (searchWord) {
+    pageSearch.value = searchWord;
+  }
+}
+
 loadProducts();
