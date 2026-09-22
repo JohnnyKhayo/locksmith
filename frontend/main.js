@@ -15,7 +15,14 @@ function productCard(product) {
       <p class="text-sm font-medium">${product.name}</p>
       <p class="text-xs text-gray-500 mb-1">${product.series} Series</p>
       <p class="text-sm font-medium mt-2 mb-3">${formatPrice(product.price)}</p>
-      <button class="w-full border border-gray-300 py-2 text-sm" ${soldOut ? "disabled" : ""}>
+      
+    
+      <button
+        type="button"
+        class="add-cart-btn w-full border border-gray-300 py-2 text-sm"
+        data-id="${product.id}"
+        ${soldOut ? "disabled" : ""}
+      >
         ${soldOut ? "Sold out" : "Add to cart"}
       </button>
     </div>
@@ -234,5 +241,68 @@ if (pageSearch) {
     pageSearch.value = searchWord;
   }
 }
+
+
+
+
+// cart
+function getCart() {
+  const saved = localStorage.getItem("cart");
+  if (saved) {
+    return JSON.parse(saved);
+  }
+  return [];
+}
+
+function saveCart(cart) {
+  localStorage.setItem("cart", JSON.stringify(cart));
+  showCartCount();
+}
+
+function showCartCount() {
+  const countBox = document.querySelector("#cart-count");
+  if (!countBox) return;
+
+  const cart = getCart();
+  let total = 0;
+  for (let i = 0; i < cart.length; i++) {
+    total = total + cart[i].qty;
+  }
+  countBox.textContent = total;
+}
+
+function addToCart(id) {
+  const product = allProducts.find(function (item) {
+    return String(item.id) === String(id);
+  });
+  if (!product) return;
+  if (product.stock <= 0) return;
+
+  const cart = getCart();
+  const found = cart.find(function (item) {
+    return String(item.id) === String(id);
+  });
+
+  if (found) {
+    found.qty = found.qty + 1;
+  } else {
+    cart.push({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      qty: 1
+    });
+  }
+
+  saveCart(cart);
+}
+
+document.addEventListener("click", function (event) {
+  if (!event.target.classList.contains("add-cart-btn")) return;
+  addToCart(event.target.getAttribute("data-id"));
+});
+
+showCartCount();
+
 
 loadProducts();

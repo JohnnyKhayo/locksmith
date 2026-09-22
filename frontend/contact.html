@@ -36,8 +36,13 @@
      <!-- search -->
     <input id="header-search" type="text" placeholder="Search" class="border border-gray-300 px-2 py-1 text-sm">
     <a href="#"><i class="fa-regular fa-user"></i></a>
-    <a href="#"><i class="fa-solid fa-bag-shopping"></i></a>
-    <i class="fa-solid fa-bars text-2xl md:hidden" style="color: black;"></i>
+    
+    <a href="#" id="cart-btn">
+  <i class="fa-solid fa-cart-plus"></i>
+  <span id="cart-count">0</span>
+</a>
+
+<i class="fa-solid fa-bars text-2xl md:hidden" style="color: black;"></i>
   </div>
   
   <!-- theme buttons -->
@@ -92,14 +97,11 @@
 
       <div class="mb-10">
         <h3 class="font-medium text-lg mb-2">Business Hours:</h3>
-        <p class="text-gray-600">Monday - Saturday, 7:00 AM - 6:00 PM (EAT)</p>
+
+         <p>Monday - Saturday, 7:00 AM - 6:00 PM (EAT)</p>
+         <p id="open-status"></p>
+
       </div>
-
-
-      <p>Monday - Saturday, 7:00 AM - 6:00 PM (EAT)</p>
-<p id="open-status"></p>
-
-
 
       <div class="mb-12">
         <h3 class="font-medium text-lg mb-3">Quick links:</h3>
