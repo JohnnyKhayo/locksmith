@@ -348,10 +348,26 @@ function showCart() {
   }
 }
 
+// offer line
+function showOfferLine() {
+  const line = document.querySelector("#offer-line");
+  if (!line) return;
+  const sum = cartSubtotal(getCart());
+  if (sum >= 100000) {
+    line.textContent = "10% off and free Nairobi delivery unlocked";
+  } else if (sum >= 50000) {
+    line.textContent = "Free Nairobi delivery unlocked";
+  } else {
+    line.textContent =
+      "Spend KSh 50,000+ for free Nairobi delivery · KSh 100,000+ for 10% off";
+  }
+}
+
 function saveCart(cart) {
   localStorage.setItem("cart", JSON.stringify(cart));
   showCartCount();
   showCart();
+  showOfferLine();
 }
 
 function addToCart(id) {
@@ -438,8 +454,10 @@ if (cartClose && cartDrawer) {
   });
 }
 
+// calls
 showCartCount();
 showCart();
+showOfferLine();
 
 // form
 function showError(id, message) {
