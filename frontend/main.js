@@ -562,6 +562,130 @@ async function loadOneProduct() {
     box.innerHTML = "<p>Could not load product. Start the API.</p>";
   }
 }
+// simulate checkout
+function cartTotals() {
+  const cart = getCart();
+  const subtotal = cartSubtotal(cart);
+  let discount = 0;
+  if (subtotal >= 100000) {
+    discount = subtotal * 0.1;
+  }
+  return {
+    cart: cart,
+    subtotal: subtotal,
+    discount: discount,
+    afterDiscount: subtotal - discount
+  };
+}
 
+function showCheckout() {
+  const list = document.querySelector("#checkout-list");
+  if (!list) return;
+
+  const data = cartTotals();
+  const method = document.querySelector("input[name='method']:checked");
+  const wantDeliver = method && method.value === "deliver";
+  const nairobi = document.querySelector("#nairobi-check");
+  const extra = document.querySelector("#deliver-extra");
+  const offer = document.querySelector("#checkout-offer");
+  const deliveryBox = document.querySelector("#checkout-delivery");
+  const totalBox = document.querySelector("#checkout-total");
+
+  if (extra) {
+    extra.style.display = wantDeliver ? "block" : "none";
+  }
+
+  if (data.cart.length === 0) {
+    list.innerHTML = "<p>Your cart is empty.</p>";
+    if (offer) offer.textContent = "";
+    if (deliveryBox) deliveryBox.textContent = "";
+    if (totalBox) totalBox.textContent = "";
+    return;
+  }
+
+  let html = "";
+  for (let i = 0; i < data.cart.length; i++) {
+    const item = data.cart[i];
+    html =
+      html +
+      "<p class='mb-2'>" +
+      item.name +
+      " × " +
+      item.qty +
+      " - " +
+      formatPrice(item.price * item.qty) +
+      "</p>";
+  }
+  list.innerHTML = html;
+
+  let delivery = 0;
+  let deliveryText = "Pickup - no delivery fee";
+
+  if (wantDeliver) {
+    if (nairobi && nairobi.checked && data.subtotal >= 50000) {
+      delivery = 0;
+      deliveryText = "Delivery in Nairobi - free";
+    } else if (nairobi && nairobi.checked) {
+      delivery = 1500;
+      deliveryText = "Delivery in Nairobi - " + formatPrice(1500);
+    } else {
+      delivery = 2500;
+      deliveryText = "Delivery outside Nairobi - " + formatPrice(2500);
+    }
+  }
+
+  if (offer) {
+    if (data.discount > 0) {
+      offer.textContent = "10% off: -" + formatPrice(data.discount);
+    } else {
+      offer.textContent = "Spend KSh 100,000 to unlock 10% off";
+    }
+  }
+
+  if (deliveryBox) deliveryBox.textContent = deliveryText;
+  if (totalBox) {
+    totalBox.textContent = "To pay: " + formatPrice(data.afterDiscount + delivery);
+  }
+}
+
+const checkoutPage = document.querySelector("#checkout-list");
+if (checkoutPage) {
+  showCheckout();
+
+  const radios = document.querySelectorAll("input[name='method']");
+  for (let i = 0; i < radios.length; i++) {
+    radios[i].addEventListener("change", showCheckout);
+  }
+
+  const nairobi = document.querySelector("#nairobi-check");
+  if (nairobi) {
+    nairobi.addEventListener("change", showCheckout);
+  }
+
+  const placeBtn = document.querySelector("#place-order");
+  if (placeBtn) {
+    placeBtn.addEventListener("click", function () {
+      const msg = document.querySelector("#checkout-msg");
+      const data = cartTotals();
+
+      if (data.cart.length === 0) {
+        if (msg) msg.textContent = "Your cart is empty.";
+        return;
+      }
+
+      const paid = data.afterDiscount;
+      const check = cartSubtotal(data.cart) - data.discount;
+      if (paid !== check) {
+        if (msg) msg.textContent = "Price check failed. Order not placed.";
+        return;
+      }
+
+      localStorage.setItem("lastOrder", JSON.stringify(data.cart));
+      saveCart([]);
+      if (msg) msg.textContent = "Order placed.";
+      showCheckout();
+    });
+  }
+}
 loadOneProduct();
 loadProducts();

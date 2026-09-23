@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout - THE KENYAN LOCKSMITH</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <p class="text-center text-sm py-2 border-b border-gray-200">
+    Premium Door Locks for Elegant Homes & Offices in Kenya
+  </p>
+
+  <header class="px-6 py-5 max-w-7xl mx-auto">
+    <a href="index.html">
+      <img src="images/smith.logo.avif" alt="THE KENYAN LOCKSMITH" class="h-16">
+    </a>
+  </header>
+
+  <main class="max-w-3xl mx-auto px-4 py-10">
+    <h1 class="text-3xl mb-6">Checkout</h1>
+
+    <div id="checkout-list" class="mb-6"></div>
+    <p id="checkout-offer" class="text-sm mb-2"></p>
+    <p id="checkout-delivery" class="text-sm mb-2"></p>
+    <p id="checkout-total" class="font-medium mb-6"></p>
+
+    <p class="mb-2">How do you want the locks?</p>
+    <label class="block mb-2">
+      <input type="radio" name="method" value="pickup" checked>
+      Pickup
+    </label>
+    <label class="block mb-2">
+      <input type="radio" name="method" value="deliver">
+      Deliver
+    </label>
+
+    <div id="deliver-extra" style="display: none;" class="mb-4">
+      <label class="block mb-2">
+        <input type="checkbox" id="nairobi-check">
+        Deliver in Nairobi
+      </label>
+    </div>
+
+    <p id="checkout-msg" class="text-sm mb-4"></p>
+
+    <button type="button" id="place-order" class="bg-black text-white px-8 py-3">
+      Place order
+    </button>
+    <p class="mt-4">
+      <a href="ourproducts.html" class="underline text-sm">Back to shop</a>
+    </p>
+  </main>
+
+  <script src="main.js"></script>
+</body>
+</html>
