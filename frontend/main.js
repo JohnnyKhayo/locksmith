@@ -19,7 +19,7 @@ function productCard(product) {
       <p class="text-sm font-medium mt-2 mb-3">${formatPrice(product.price)}</p>
       <button
         type="button"
-        class="add-cart-btn w-full border border-gray-300 py-2 text-sm rounded-lg hover:bg-gray-400 bg-black text-white"
+        class="add-cart-btn w-full border border-gray-300 py-2 text-sm rounded-lg hover:bg-gray-700 bg-black text-white"
         data-id="${product.id}"
         ${soldOut ? "disabled" : ""}
       >
@@ -560,36 +560,45 @@ async function loadOneProduct() {
   }
 
   try {
-    const response = await fetch(API);
-    if (!response.ok) throw new Error("bad response");
-    const products = await response.json();
-    const p = products.find(function (item) {
-      return String(item.id) === String(id);
-    });
+      const response = await fetch(API);
+      if (!response.ok) throw new Error("bad response");
+      const products = await response.json();
+      allProducts = products;
+      const p = products.find(function (item) {
+        return String(item.id) === String(id);
+      });
 
-    if (!p) {
-      box.innerHTML = "<p>Product not found.</p>";
-      return;
-    }
-
+      if (!p) {
+        box.innerHTML = "<p>Product not found.</p>";
+        return;
+      }
+    
+    // with add to cart btn products page
     box.innerHTML = `
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <img src="${p.image}" alt="${p.name}" class="w-full object-cover">
-        <div>
-          <p class="text-sm mb-2">${p.series} Series · ${p.sku}</p>
-          <h1 class="text-3xl mb-4">${p.name}</h1>
-          <p class="text-xl mb-4">${formatPrice(p.price)}</p>
-          <p class="mb-4">${p.description}</p>
-          <p class="mb-6">${p.stock > 0 ? "In stock" : "Sold out"}</p>
-          <a href="ourproducts.html" class="underline">Back to shop</a>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <img src="${p.image}" alt="${p.name}" class="w-full object-cover">
+          <div>
+            <p class="text-sm mb-2">${p.series} Series · ${p.sku}</p>
+            <h1 class="text-3xl mb-4">${p.name}</h1>
+            <p class="text-xl mb-4">${formatPrice(p.price)}</p>
+            <p class="mb-4">${p.description}</p>
+            <p class="mb-6">${p.stock > 0 ? "In stock" : "Sold out"}</p>
+            <button
+              type="button"
+              class="add-cart-btn bg-black text-white px-6 py-2 mb-4 rounded-md"
+              data-id="${p.id}"
+              ${p.stock <= 0 ? "disabled" : ""}
+            >
+              ${p.stock <= 0 ? "Sold out" : "Add to cart"}
+            </button>
+            <a href="ourproducts.html" class="underline">Back to shop</a>
+          </div>
         </div>
-      </div>
-    `;
-  } catch (error) {
-    box.innerHTML = "<p>Could not load product. Start the API.</p>";
+      `;
+    } catch (error) {
+      box.innerHTML = "<p>Could not load product. Start the API.</p>";
+    }
   }
-}
-
 
 // add simulate checkout
 function cartTotals() {
