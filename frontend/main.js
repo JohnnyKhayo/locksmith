@@ -240,8 +240,14 @@ if (pageSearch) {
     pageSearch.value = searchWord;
   }
 }
-
-
+// this enables from product series to filter
+const seriesSelect = document.querySelector("#series-select");
+if (seriesSelect) {
+  const seriesWord = new URLSearchParams(window.location.search).get("series");
+  if (seriesWord) {
+    seriesSelect.value = seriesWord;
+  }
+}
 
 
 // cart
@@ -253,9 +259,12 @@ function getCart() {
   return [];
 }
 
-function saveCart(cart) {
-  localStorage.setItem("cart", JSON.stringify(cart));
-  showCartCount();
+function cartSubtotal(cart) {
+  let sum = 0;
+  for (let i = 0; i < cart.length; i++) {
+    sum = sum + cart[i].price * cart[i].qty;
+  }
+  return sum;
 }
 
 function showCartCount() {
@@ -268,6 +277,72 @@ function showCartCount() {
     total = total + cart[i].qty;
   }
   countBox.textContent = total;
+}
+
+function showCart() {
+  const list = document.querySelector("#cart-list");
+  const offer = document.querySelector("#cart-offer");
+  const subtotalBox = document.querySelector("#cart-subtotal");
+  if (!list) return;
+
+  const cart = getCart();
+
+  if (cart.length === 0) {
+    list.innerHTML = "<p>Your cart is empty.</p>";
+    if (offer) offer.textContent = "";
+    if (subtotalBox) subtotalBox.textContent = "";
+    return;
+  }
+
+  let html = "";
+  for (let i = 0; i < cart.length; i++) {
+    const item = cart[i];
+    const line = item.price * item.qty;
+    html =
+      html +
+      "<div class='mb-3'>" +
+      "<p>" + item.name + "</p>" +
+      "<p class='text-sm'>" +
+      formatPrice(item.price) +
+      " × " +
+      item.qty +
+      " = " +
+      formatPrice(line) +
+      "</p>" +
+      "<button type='button' class='qty-minus border px-2' data-id='" +
+      item.id +
+      "'>-</button> " +
+      "<button type='button' class='qty-plus border px-2' data-id='" +
+      item.id +
+      "'>+</button> " +
+      "<button type='button' class='qty-remove border px-2' data-id='" +
+      item.id +
+      "'>Remove</button>" +
+      "</div>";
+  }
+  list.innerHTML = html;
+
+  const sum = cartSubtotal(cart);
+  if (subtotalBox) {
+    subtotalBox.textContent = "Subtotal: " + formatPrice(sum);
+  }
+
+  if (offer) {
+    if (sum >= 100000) {
+      offer.textContent = "10% off unlocked. Free Nairobi delivery unlocked.";
+    } else if (sum >= 50000) {
+      offer.textContent = "Free Nairobi delivery unlocked. Add more for 10% off.";
+    } else {
+      const need = 50000 - sum;
+      offer.textContent = "Add " + formatPrice(need) + " more for free Nairobi delivery.";
+    }
+  }
+}
+
+function saveCart(cart) {
+  localStorage.setItem("cart", JSON.stringify(cart));
+  showCartCount();
+  showCart();
 }
 
 function addToCart(id) {
@@ -296,12 +371,66 @@ function addToCart(id) {
   saveCart(cart);
 }
 
+function changeQty(id, amount) {
+  const cart = getCart();
+  const found = cart.find(function (item) {
+    return String(item.id) === String(id);
+  });
+  if (!found) return;
+
+  found.qty = found.qty + amount;
+  if (found.qty <= 0) {
+    const next = cart.filter(function (item) {
+      return String(item.id) !== String(id);
+    });
+    saveCart(next);
+    return;
+  }
+  saveCart(cart);
+}
+
+function removeItem(id) {
+  const cart = getCart().filter(function (item) {
+    return String(item.id) !== String(id);
+  });
+  saveCart(cart);
+}
+
 document.addEventListener("click", function (event) {
-  if (!event.target.classList.contains("add-cart-btn")) return;
-  addToCart(event.target.getAttribute("data-id"));
+  if (event.target.classList.contains("add-cart-btn")) {
+    addToCart(event.target.getAttribute("data-id"));
+  }
+  if (event.target.classList.contains("qty-plus")) {
+    changeQty(event.target.getAttribute("data-id"), 1);
+  }
+  if (event.target.classList.contains("qty-minus")) {
+    changeQty(event.target.getAttribute("data-id"), -1);
+  }
+  if (event.target.classList.contains("qty-remove")) {
+    removeItem(event.target.getAttribute("data-id"));
+  }
 });
 
+const cartBtn = document.querySelector("#cart-btn");
+const cartDrawer = document.querySelector("#cart-drawer");
+const cartClose = document.querySelector("#cart-close");
+
+if (cartBtn && cartDrawer) {
+  cartBtn.addEventListener("click", function (event) {
+    event.preventDefault();
+    cartDrawer.classList.add("open");
+    showCart();
+  });
+}
+
+if (cartClose && cartDrawer) {
+  cartClose.addEventListener("click", function () {
+    cartDrawer.classList.remove("open");
+  });
+}
+
 showCartCount();
+showCart();
 
 // form
 function showError(id, message) {

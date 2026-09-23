@@ -18,3 +18,28 @@ body.dark-theme {
   background-color: rgb(17, 17, 17);
   color: rgb(245, 245, 245);
 }
+
+.cart-drawer {
+  display: none;
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 320px;
+  max-width: 100%;
+  height: 100%;
+  background-color: rgb(255, 255, 255);
+  color: rgb(17, 17, 17);
+  border-left: 1px solid rgb(200, 200, 200);
+  padding: 16px;
+  overflow: auto;
+  z-index: 50;
+}
+
+.cart-drawer.open {
+  display: block;
+}
+
+body.dark-theme .cart-drawer {
+  background-color: rgb(17, 17, 17);
+  color: rgb(245, 245, 245);
+}

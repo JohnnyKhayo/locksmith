@@ -98,31 +98,31 @@
           
           <div class="space-y-4">
             <div class="flex items-center justify-between">
-              <span>Wood Series </span>
-              <button class="border border-gray-300 px-3 py-1 text-sm hover:bg-gray-100">View</button>
-             </div>
+              <span>Wood Series</span>
+              <a href="ourproducts.html?series=Wood" class="border border-gray-300 px-3 py-1 text-sm hover:bg-gray-100">View</a>
+            </div>
             <div class="flex items-center justify-between">
-              <span>Metallic Series </span>
-              <button class="border border-gray-300 px-3 py-1 text-sm hover:bg-gray-100">View</button>
+              <span>Metallic Series</span>
+              <a href="ourproducts.html?series=Metallic" class="border border-gray-300 px-3 py-1 text-sm hover:bg-gray-100">View</a>
             </div>
             <div class="flex items-center justify-between">
               <span>Leather Series</span>
-        <button class="border border-gray-300 px-3 py-1 text-sm hover:bg-gray-100">View</button>
+              <a href="ourproducts.html?series=Leather" class="border border-gray-300 px-3 py-1 text-sm hover:bg-gray-100">View</a>
             </div>
             <div class="flex items-center justify-between">
               <span>Grand Series</span>
-              <button class="border border-gray-300 px-3 py-1 text-sm hover:bg-gray-100">View</button>
+              <a href="ourproducts.html?series=Grand" class="border border-gray-300 px-3 py-1 text-sm hover:bg-gray-100">View</a>
             </div>
             <div class="flex items-center justify-between">
               <span>Villa Series</span>
-              <button class="border border-gray-300 px-3 py-1 text-sm hover:bg-gray-100">View</button>
+              <a href="ourproducts.html?series=Villa" class="border border-gray-300 px-3 py-1 text-sm hover:bg-gray-100">View</a>
             </div>
-             <div class="flex items-center justify-between">
-            <span>Smart Series
-            </span>
-              <button class="border border-gray-300 px-3 py-1 text-sm hover:bg-gray-100">View</button>
+            <div class="flex items-center justify-between">
+              <span>Smart Series</span>
+              <a href="ourproducts.html?series=Smart" class="border border-gray-300 px-3 py-1 text-sm hover:bg-gray-100">View</a>
             </div>
           </div>
+
         </div>
 
 
@@ -223,6 +223,18 @@
   </button>
 </div>
 
+<div id="cart-drawer" class="cart-drawer">
+  <div class="cart-drawer-inner">
+    <p class="mb-3">
+      <strong>Your cart</strong>
+      <button type="button" id="cart-close" class="border border-gray-300 px-2 py-1 text-xs ml-2">Close</button>
+    </p>
+    <div id="cart-list"></div>
+    <p id="cart-offer" class="text-sm mt-3"></p>
+    <p id="cart-subtotal" class="text-sm font-medium mt-2"></p>
+    <a id="cart-checkout" href="checkout.html" class="inline-block mt-3 border border-gray-300 px-4 py-2 text-sm">Checkout</a>
+  </div>
+</div>
 
   <script src="main.js"></script>
 </body>
