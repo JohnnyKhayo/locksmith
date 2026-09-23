@@ -205,16 +205,25 @@ function getCookie(name) {
   return "";
 }
 
+// cookie button
 const banner = document.querySelector("#cookie-banner");
 const acceptBtn = document.querySelector("#cookie-accept");
+const denyBtn = document.querySelector("#cookie-deny");
 
-if (banner && getCookie("cookiesAccepted") !== "yes") {
+if (banner && getCookie("cookiesAccepted") === "") {
   banner.style.display = "block";
 }
 
 if (acceptBtn) {
   acceptBtn.addEventListener("click", function () {
     setCookie("cookiesAccepted", "yes", 7);
+    banner.style.display = "none";
+  });
+}
+
+if (denyBtn) {
+  denyBtn.addEventListener("click", function () {
+    setCookie("cookiesAccepted", "no", 7);
     banner.style.display = "none";
   });
 }
