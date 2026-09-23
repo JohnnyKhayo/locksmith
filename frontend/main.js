@@ -562,7 +562,9 @@ async function loadOneProduct() {
     box.innerHTML = "<p>Could not load product. Start the API.</p>";
   }
 }
-// simulate checkout
+
+
+// add simulate checkout
 function cartTotals() {
   const cart = getCart();
   const subtotal = cartSubtotal(cart);
@@ -687,5 +689,113 @@ if (checkoutPage) {
     });
   }
 }
+
+// register and login 
+function getUsers() {
+  const saved = localStorage.getItem("users");
+  if (saved) {
+    return JSON.parse(saved);
+  }
+  return [];
+}
+
+function getCurrentUser() {
+  const saved = localStorage.getItem("currentUser");
+  if (saved) {
+    return JSON.parse(saved);
+  }
+  return null;
+}
+
+function setMsg(id, text, ok) {
+  const box = document.querySelector("#" + id);
+  if (!box) return;
+  box.textContent = text;
+  if (ok) {
+    box.style.color = "rgb(0, 128, 0)";
+  } else {
+    box.style.color = "rgb(180, 0, 0)";
+  }
+}
+
+const registerForm = document.querySelector("#register-form");
+if (registerForm) {
+  registerForm.addEventListener("submit", function (event) {
+    event.preventDefault();
+
+    const email = document.querySelector("#reg-email").value.trim();
+    const password = document.querySelector("#reg-password").value;
+    const confirm = document.querySelector("#reg-confirm").value;
+
+    if (email.indexOf("@") === -1) {
+      setMsg("reg-msg", "Enter a valid email.", false);
+      return;
+    }
+    if (password.length < 4) {
+      setMsg("reg-msg", "Password must be at least 4 characters.", false);
+      return;
+    }
+    if (password !== confirm) {
+      setMsg("reg-msg", "Password and confirm password do not match.", false);
+      return;
+    }
+
+    const users = getUsers();
+    const exists = users.find(function (user) {
+      return user.email === email;
+    });
+    if (exists) {
+      setMsg("reg-msg", "That email is already registered. Please login.", false);
+      return;
+    }
+
+    users.push({ email: email, password: password });
+    localStorage.setItem("users", JSON.stringify(users));
+    registerForm.reset();
+    setMsg(
+      "reg-msg",
+      "Account created. Save this email and password. You can login now.",
+      true
+    );
+  });
+}
+
+const loginForm = document.querySelector("#login-form");
+if (loginForm) {
+  loginForm.addEventListener("submit", function (event) {
+    event.preventDefault();
+
+    const email = document.querySelector("#login-email").value.trim();
+    const password = document.querySelector("#login-password").value;
+    const users = getUsers();
+
+    const user = users.find(function (item) {
+      return item.email === email;
+    });
+
+    if (!user) {
+      setMsg("login-msg", "User not registered.", false);
+      return;
+    }
+
+    if (user.password !== password) {
+      setMsg("login-msg", "Password does not match.", false);
+      return;
+    }
+
+    localStorage.setItem("currentUser", JSON.stringify({ email: user.email }));
+    setMsg("login-msg", "Login successful.", true);
+
+    setTimeout(function () {
+      window.location.href = "checkout.html";
+    }, 800);
+  });
+}
+
+const checkoutList = document.querySelector("#checkout-list");
+if (checkoutList && !getCurrentUser()) {
+  window.location.href = "login.html";
+}
+
 loadOneProduct();
 loadProducts();

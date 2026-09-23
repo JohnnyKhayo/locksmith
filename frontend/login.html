@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - THE KENYAN LOCKSMITH</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-amber-50">
+  <main class="max-w-md mx-auto px-4 py-12">
+        <h1 class="text-3xl mb-6">Account</h1>
+
+    <p class="text-sm mb-6">
+      Write down your email and password and keep them safe.
+      You will need the same details every time you login.
+    </p>
+
+    <h2 class="text-lg mb-2">Register</h2>
+    <form id="register-form" class="space-y-3 mb-8">
+      <input id="reg-email" type="email" placeholder="Email" class="w-full border px-3 py-2">
+      <input id="reg-password" type="password" placeholder="Password" class="w-full border px-3 py-2">
+      <input id="reg-confirm" type="password" placeholder="Confirm password" class="w-full border px-3 py-2">
+      <p id="reg-msg" class="text-sm"></p>
+      <button type="submit" class="bg-black text-white px-6 py-2">Create account</button>
+    </form>
+
+    <h2 class="text-lg mb-2">Login</h2>
+    <form id="login-form" class="space-y-3">
+      <input id="login-email" type="email" placeholder="Email" class="w-full border px-3 py-2">
+      <input id="login-password" type="password" placeholder="Password" class="w-full border px-3 py-2">
+      <p id="login-msg" class="text-sm"></p>
+      <button type="submit" class="bg-black text-white px-6 py-2 rounded-lg">Login</button>
+    </form>
+
+    <p class="mt-6">
+      <a href="index.html" class="underline text-sm">Back to shop</a>
+    </p>
+
+  </main>
+  <script src="main.js"></script>
+</body>
+</html>
