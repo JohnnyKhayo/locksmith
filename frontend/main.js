@@ -19,7 +19,7 @@ function productCard(product) {
       <p class="text-sm font-medium mt-2 mb-3">${formatPrice(product.price)}</p>
       <button
         type="button"
-        class="add-cart-btn w-full border border-gray-300 py-2 text-sm rounded-lg"
+        class="add-cart-btn w-full border border-gray-300 py-2 text-sm rounded-lg hover:bg-gray-400 bg-black text-white"
         data-id="${product.id}"
         ${soldOut ? "disabled" : ""}
       >
