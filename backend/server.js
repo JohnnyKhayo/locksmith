@@ -5,7 +5,8 @@ const cors = require("cors")
 const app = express();
 const PORT = 3001;
 
-app.use(cors());
+app.use(cors())
+app.use(express.json())
 
 const lockProducts = [
   {
@@ -191,7 +192,7 @@ const lockProducts = [
     series: "Leather",
     price: 11200,
     image: "images/smith.17.webp",
-    stock: 0,
+    stock: 5,
     featured: false,
     description: "A luxury leather handle for a stylish secure entrance. This item is sold out, so treat it as a reference until stock returns."
   }
