@@ -15,42 +15,40 @@
   </p>
 
 
-  <header class="bg-amber-100 flex justify-between items-center px-6 md:px-8 py-5 max-w-7xl mx-auto">
-  
-  <div>
-    <img src="images/smith.logo.avif" alt="THE KENYAN LOCKSMITH" class="h-20 md:h-24">
+<header class="bg-amber-100 px-4 py-4 md:px-8">
+  <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
+
+    <a href="index.html" class="shrink-0">
+      <img src="images/smith.logo.avif" alt="THE KENYAN LOCKSMITH" class="h-14 md:h-24">
+    </a>
+
+    <nav id="main-nav" class="hidden w-full md:block md:w-auto order-last md:order-none">
+      <ul class="flex flex-col md:flex-row gap-3 md:gap-8 text-sm py-2 md:py-0">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="ourproducts.html">Our Products</a></li>
+        <li><a href="contact.html">Contact us</a></li>
+      </ul>
+    </nav>
+
+    <div class="flex items-center gap-3">
+      <a href="login.html"><i class="fa-regular fa-user"></i></a>
+      <a href="#" id="cart-btn">
+        <i class="fa-solid fa-cart-plus"></i>
+        <span id="cart-count">0</span>
+      </a>
+      <button type="button" id="light-btn" class="hidden sm:inline border px-2 py-1 text-xs rounded-lg bg-white">Light</button>
+      <button type="button" id="dark-btn" class="hidden sm:inline border px-2 py-1 text-xs rounded-lg bg-black text-white">Dark</button>
+      <button type="button" id="menu-btn" class="md:hidden text-2xl">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+    </div>
+
+    <input id="header-search" type="text" placeholder="Search"
+      class="w-full md:w-40 border border-gray-300 px-2 py-1 text-sm order-last md:order-none">
   </div>
-
-  <nav class="hidden md:block">
-    <ul class="flex gap-8 text-sm">
-      <li><a href="index.html" class="hover:underline">Home</a></li>
-      <li><a href="about.html" class="hover:underline">About</a></li>
-      <li><a href="ourproducts.html" class="hover:underline">Our Products</a></li>
-      <li><a href="contact.html" class="hover:underline">Contact us</a></li>
-    </ul>
-  </nav>
-
-  <div class="flex items-center gap-4 text-lg">
-<!-- search -->
-    <input id="header-search" type="text" placeholder="Search" class="border border-gray-300 px-2 py-1 text-sm">
-    <a href="#"><i class="fa-regular fa-user"></i></a>
-    
-    <a href="#" id="cart-btn">
-  <i class="fa-solid fa-cart-plus"></i>
-  <span id="cart-count">0</span>
-</a>
-
-<!-- hamburger -->
-    <i class="fa-solid fa-bars text-2xl md:hidden" style="color: black;">
-    </i>
-  </div>
-
-<div>
-  <button type="button" id="light-btn" class="border border-gray-900 px-2 py-1 text-xs bg-white rounded-lg text-black">Light</button>
-<button type="button" id="dark-btn" class="border border-gray-300 px-2 py-1 text-xs bg-black rounded-lg text-white">Dark</button>
-  </div>
-
 </header>
+
 <!-- offer -->
 <div class="bg-white max-w-md mx-auto rounded-lg shadow-sm">
   <p id="offer-line" class="text-center text-sm py-2 text-green-800 font-medium"></p>

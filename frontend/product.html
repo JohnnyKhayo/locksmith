@@ -16,21 +16,40 @@
     Premium Door Locks for Elegant Homes & Offices in Kenya
   </p>
 
-  <header class="flex justify-between items-center px-6 md:px-8 py-5 max-w-7xl mx-auto bg-amber-100">
-    <div>
-      <a href="index.html">
-        <img src="images/smith.logo.avif" alt="THE KENYAN LOCKSMITH" class="h-20 md:h-24">
-      </a>
-    </div>
-    <nav class="hidden md:block">
-      <ul class="flex gap-8 text-sm">
-        <li><a href="index.html" class="hover:underline">Home</a></li>
-        <li><a href="about.html" class="hover:underline">About</a></li>
-        <li><a href="ourproducts.html" class="hover:underline">Our Products</a></li>
-        <li><a href="contact.html" class="hover:underline">Contact us</a></li>
+  <header class="bg-amber-100 px-4 py-4 md:px-8">
+  <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
+
+    <a href="index.html" class="shrink-0">
+      <img src="images/smith.logo.avif" alt="THE KENYAN LOCKSMITH" class="h-14 md:h-24">
+    </a>
+
+    <nav id="main-nav" class="hidden w-full md:block md:w-auto order-last md:order-none">
+      <ul class="flex flex-col md:flex-row gap-3 md:gap-8 text-sm py-2 md:py-0">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="ourproducts.html">Our Products</a></li>
+        <li><a href="contact.html">Contact us</a></li>
       </ul>
     </nav>
-  </header>
+
+    <div class="flex items-center gap-3">
+      <a href="login.html"><i class="fa-regular fa-user"></i></a>
+      <a href="#" id="cart-btn">
+        <i class="fa-solid fa-cart-plus"></i>
+        <span id="cart-count">0</span>
+      </a>
+      <button type="button" id="light-btn" class="hidden sm:inline border px-2 py-1 text-xs rounded-lg bg-white">Light</button>
+      <button type="button" id="dark-btn" class="hidden sm:inline border px-2 py-1 text-xs rounded-lg bg-black text-white">Dark</button>
+      <button type="button" id="menu-btn" class="md:hidden text-2xl">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+    </div>
+
+    <input id="header-search" type="text" placeholder="Search"
+      class="w-full md:w-40 border border-gray-300 px-2 py-1 text-sm order-last md:order-none">
+  </div>
+</header>
+
 </div>
 
 <br>
@@ -42,7 +61,19 @@
     <div id="product-detail"></div>
   </main>
 
-  
+  <div id="cart-drawer" class="cart-drawer">
+  <div class="cart-drawer-inner">
+    <p class="mb-3">
+      <strong>Your cart</strong>
+      <button type="button" id="cart-close" class="border px-2 py-1 text-xs ml-2">Close</button>
+    </p>
+    <div id="cart-list"></div>
+    <p id="cart-offer" class="text-sm mt-3"></p>
+    <p id="cart-subtotal" class="text-sm font-medium mt-2"></p>
+    <a id="cart-checkout" href="checkout.html" class="inline-block mt-3 border px-4 py-2 text-sm">Checkout</a>
+  </div>
+</div>
+
   <script src="main.js"></script>
 </body>
 </html>

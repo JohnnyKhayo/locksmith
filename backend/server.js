@@ -17,7 +17,7 @@ const lockProducts = [
     image: "images/smith.1.webp",
     stock: 8,
     featured: true,
-    description: "Modern hexagonal handle lock for wooden doors"
+    description: "This hexagonal handle is made for wooden doors that need a clear focal point. The grip feels firm, the latch is straightforward to live with, and it suits main rooms where guests actually see the door."
   },
   {
     id: 2,
@@ -28,7 +28,7 @@ const lockProducts = [
     image: "images/smith.2.webp",
     stock: 6,
     featured: true,
-    description: "Simple secure entry lock"
+    description: "A simple secure entry set for homes and small offices. It is easy to operate every day, sits neatly on a standard leaf, and does not crowd the door with extra decoration."
   },
   {
     id: 3,
@@ -39,7 +39,7 @@ const lockProducts = [
     image: "images/smith.3.webp",
     stock: 4,
     featured: true,
-    description: "Luxury grooved metal handle set"
+    description: "A luxury metal set with a grooved jewellery handle for the front door. It is meant to look expensive in the entrance and still close with a solid, reliable feel."
   },
   {
     id: 4,
@@ -50,7 +50,7 @@ const lockProducts = [
     image: "images/smith.4.webp",
     stock: 7,
     featured: true,
-    description: "Complete set with wooden handle"
+    description: "A complete lock set with a wooden handle if you want warmth on the door without losing strength. It pairs well with timber frames common in Kenyan houses and offices."
   },
   {
     id: 5,
@@ -61,7 +61,7 @@ const lockProducts = [
     image: "images/smith.5.webp",
     stock: 3,
     featured: true,
-    description: "Crystal handle premium set"
+    description: "An artistic crystal handle set for spaces that should feel finished. Use it on a lounge or hallway door where the hardware is part of the room, not hidden."
   },
   {
     id: 6,
@@ -72,7 +72,7 @@ const lockProducts = [
     image: "images/smith.6.webp",
     stock: 5,
     featured: true,
-    description: "Artistic metal lock, luxury finish"
+    description: "A grooved artistic metal lock with a luxury finish. It works on feature doors where you want metal to catch the light and the handle to feel substantial."
   },
   {
     id: 7,
@@ -83,7 +83,7 @@ const lockProducts = [
     image: "images/smith.7.webp",
     stock: 9,
     featured: true,
-    description: "Modern knurled metal grip"
+    description: "A modern knurled metal grip that is easy to hold. The texture helps in daily use and the look fits new builds and renovated interiors."
   },
   {
     id: 8,
@@ -94,7 +94,7 @@ const lockProducts = [
     image: "images/smith.8.webp",
     stock: 4,
     featured: true,
-    description: "Solid wood accent with modern security"
+    description: "A solid wood accent lock for people who want security and timber in one piece. It reads as calm and strong rather than bulky on the door."
   },
   {
     id: 9,
@@ -105,7 +105,7 @@ const lockProducts = [
     image: "images/smith.9.webp",
     stock: 6,
     featured: true,
-    description: "Minimalist wooden lock set"
+    description: "A  premium wooden set with a minimalist face. Good for bedrooms and inner doors where you want quiet hardware and a clean line."
   },
   {
     id: 10,
@@ -116,7 +116,7 @@ const lockProducts = [
     image: "images/smith.10.webp",
     stock: 5,
     featured: false,
-    description: "Wooden handle modern set"
+    description: "A modern set with a wooden handle for everyday rooms. It is a practical match for interior wooden doors that need a lock that does not look temporary."
   },
   {
     id: 11,
@@ -127,7 +127,7 @@ const lockProducts = [
     image: "images/smith.11.webp",
     stock: 8,
     featured: false,
-    description: "Square knurled contemporary handle"
+    description: "A square knurled handle in a contemporary style. Choose it when the house already has sharp furniture lines and you want the lock to follow that language."
   },
   {
     id: 12,
@@ -138,7 +138,7 @@ const lockProducts = [
     image: "images/smith.12.webp",
     stock: 3,
     featured: false,
-    description: "Walnut circular villa lock"
+    description: "An elegant walnut circular lock for villa style entrance doors. The round form and wood tone suit larger leaves and more formal hallways."
   },
   {
     id: 13,
@@ -149,7 +149,7 @@ const lockProducts = [
     image: "images/smith.13.webp",
     stock: 4,
     featured: false,
-    description: "Modern unique circular lock"
+    description: "A modern circular lock when the door itself should feel designed. It stands out on the leaf and still does the basic job of locking the room."
   },
   {
     id: 14,
@@ -160,7 +160,7 @@ const lockProducts = [
     image: "images/smith.14.webp",
     stock: 7,
     featured: false,
-    description: "Wood finish modern security set"
+    description: "An elegant wood finish set for daily security. Built for family and office doors that open many times a day and still need to look tidy."
   },
   {
     id: 15,
@@ -171,7 +171,7 @@ const lockProducts = [
     image: "images/smith.15.webp",
     stock: 5,
     featured: false,
-    description: "Leather accent lock system"
+    description: "A premium leather accent system for a softer grip and a tailored look. It suits dressed interiors where metal alone would feel too cold."
   },
   {
     id: 16,
@@ -182,7 +182,7 @@ const lockProducts = [
     image: "images/smith.16.webp",
     stock: 2,
     featured: false,
-    description: "Premium wood and brass complete lock"
+    description: "A  complete wood and brass lock for heavier doors. Brass lifts the finish and the full set is meant for a main entrance that should feel expensive."
   },
   {
     id: 17,
@@ -193,7 +193,7 @@ const lockProducts = [
     image: "images/smith.17.webp",
     stock: 0,
     featured: false,
-    description: "Luxury leather handle. Sold out"
+    description: "A luxury leather handle for a stylish secure entrance. This item is sold out, so treat it as a reference until stock returns."
   }
 ];
 

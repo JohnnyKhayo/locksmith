@@ -3,7 +3,7 @@ const API = "http://localhost:3001/api/products";
 let allProducts = [];
 
 function formatPrice(price) {
-  return "KSh" + Number(price).toLocaleString() + ".00";
+  return "KSh" + " " + Number(price).toLocaleString() + ".00";
 }
 // Build the HTML for one product card
 
@@ -338,9 +338,9 @@ function showCart() {
 
   if (offer) {
     if (sum >= 100000) {
-      offer.textContent = "10% off unlocked. Free Nairobi delivery unlocked.";
+      offer.textContent = "5% off unlocked. Free Nairobi delivery unlocked.";
     } else if (sum >= 50000) {
-      offer.textContent = "Free Nairobi delivery unlocked. Add more for 10% off.";
+      offer.textContent = "Free Nairobi delivery unlocked. Add more for 5% off.";
     } else {
       const need = 50000 - sum;
       offer.textContent = "Add " + formatPrice(need) + " more for free Nairobi delivery.";
@@ -354,12 +354,12 @@ function showOfferLine() {
   if (!line) return;
   const sum = cartSubtotal(getCart());
   if (sum >= 100000) {
-    line.textContent = "10% off and free Nairobi delivery unlocked";
+    line.textContent = "5% off and free Nairobi delivery unlocked";
   } else if (sum >= 50000) {
     line.textContent = "Free Nairobi delivery unlocked";
   } else {
     line.textContent =
-      "Spend KSh 50,000+ for free Nairobi delivery · KSh 100,000+ for 10% off";
+      "Spend KSh 50,000+ for free Nairobi delivery · KSh 100,000+ for 5% off";
   }
 }
 
@@ -606,7 +606,7 @@ function cartTotals() {
   const subtotal = cartSubtotal(cart);
   let discount = 0;
   if (subtotal >= 100000) {
-    discount = subtotal * 0.1;
+    discount = subtotal * 0.05;
   }
   return {
     cart: cart,
@@ -674,9 +674,9 @@ function showCheckout() {
 
   if (offer) {
     if (data.discount > 0) {
-      offer.textContent = "10% off: -" + formatPrice(data.discount);
+      offer.textContent = "5% off: -" + formatPrice(data.discount);
     } else {
-      offer.textContent = "Spend KSh 100,000 to unlock 10% off";
+      offer.textContent = "Spend KSh 100,000 to unlock 5% off";
     }
   }
 
