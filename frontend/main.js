@@ -7,6 +7,7 @@ function formatPrice(price) {
 
 // catalogue: cards, filters, fetch, product detail
 
+
 function productCard(product) {
   const soldOut = product.stock <= 0;
   return `
@@ -46,7 +47,7 @@ function showProducts() {
   if (!all) return;
 
   const search = document.querySelector("#search-input");
-  const series = document.querySelector("#series-select");
+   const series = document.querySelector("#series-select");
   const sort = document.querySelector("#sort-select");
   const inStock = document.querySelector("#in-stock-only");
 
@@ -126,6 +127,8 @@ if (series) {
   if (seriesWord) series.value = seriesWord;
 }
 
+
+
 async function loadOneProduct() {
   const box = document.querySelector("#product-detail");
   if (!box) return;
@@ -135,6 +138,7 @@ async function loadOneProduct() {
     box.innerHTML = "<p>No product selected.</p>";
     return;
   }
+
 
   try {
     const response = await fetch(API);
@@ -160,14 +164,14 @@ async function loadOneProduct() {
           <p class="mb-4">${p.description}</p>
           <p class="mb-6">${p.stock > 0 ? "In stock" : "Sold out"}</p>
           <button
-            type="button"
+          type="button"
             class="add-cart-btn bg-black text-white px-6 py-2 mb-4 rounded-md"
             data-id="${p.id}"
             ${p.stock <= 0 ? "disabled" : ""}
           >
             ${p.stock <= 0 ? "Sold out" : "Add to cart"}
           </button>
-          <a href="ourproducts.html" class="underline">Back to shop</a>
+        <a href="ourproducts.html" class="underline">Back to shop</a>
         </div>
       </div>
     `;
@@ -215,10 +219,10 @@ if (countrySelect) {
 }
 
 // Contact / About: Open now vs Closed. Shop hours Mon–Sat 07:00–18:00 EAT.
-function showOpenHours() {
+ function showOpenHours() {
   const status = document.querySelector("#open-status");
   if (!status) return;
-  const now = new Date();
+       const now = new Date();
   const eatHour = now.getUTCHours() + 3;
   const day = now.getUTCDay();
   const open = day >= 1 && day <= 6 && eatHour >= 7 && eatHour < 18;
@@ -231,6 +235,7 @@ function setCookie(name, value, days) {
   date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
   document.cookie = name + "=" + value + ";expires=" + date.toUTCString() + ";path=/";
 }
+
 
 function getCookie(name) {
   const cookies = document.cookie.split(";");
@@ -263,7 +268,7 @@ if (denyBtn) {
   });
 }
 
-// Enter in the header box → All Products with ?search=
+// Enter in the header box → All Products with ?search= HEADER
 const headerSearch = document.querySelector("#header-search");
 if (headerSearch) {
   headerSearch.addEventListener("keydown", function (event) {
@@ -280,7 +285,7 @@ function getCart() {
   return saved ? JSON.parse(saved) : [];
 }
 
-// Money in bg: price × qty for every line.
+// Money in bg: price x qty for every line.
 function cartSubtotal(cart) {
   let sum = 0;
   for (let i = 0; i < cart.length; i++) {
@@ -324,10 +329,10 @@ function showCart() {
       "<div class='mb-3'>" +
       "<p>" + item.name + "</p>" +
       "<p class='text-sm'>" +
-      formatPrice(item.price) + " × " + item.qty + " = " + formatPrice(line) +
+      formatPrice(item.price) + " x " + item.qty + " = " + formatPrice(line) +
       "</p>" +
       "<button type='button' class='qty-minus border px-2' data-id='" + item.id + "'>-</button> " +
-      "<button type='button' class='qty-plus border px-2' data-id='" + item.id + "'>+</button> " +
+       "<button type='button' class='qty-plus border px-2' data-id='" + item.id + "'>+</button> " +
       "<button type='button' class='qty-remove border px-2' data-id='" + item.id + "'>Remove</button>" +
       "</div>";
   }
@@ -489,7 +494,7 @@ function showCheckout() {
     const item = data.cart[i];
     html +=
       "<p class='mb-2'>" +
-      item.name + " × " + item.qty + " - " + formatPrice(item.price * item.qty) +
+      item.name + " x " + item.qty + " - " + formatPrice(item.price * item.qty) +
       "</p>";
   }
   list.innerHTML = html;
