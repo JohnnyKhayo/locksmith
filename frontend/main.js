@@ -726,7 +726,7 @@ if (checkoutPage) {
   }
 }
 
-// register and login 
+// register and login
 function getUsers() {
   const saved = localStorage.getItem("users");
   if (saved) {
@@ -747,11 +747,35 @@ function setMsg(id, text, ok) {
   const box = document.querySelector("#" + id);
   if (!box) return;
   box.textContent = text;
-  if (ok) {
-    box.style.color = "rgb(0, 128, 0)";
+  box.style.color = ok ? "rgb(0, 128, 0)" : "rgb(180, 0, 0)";
+}
+
+function afterLoginGo() {
+  const next = new URLSearchParams(window.location.search).get("next");
+  if (next === "checkout") {
+    window.location.href = "checkout.html";
   } else {
-    box.style.color = "rgb(180, 0, 0)";
+    window.location.href = "index.html";
   }
+}
+
+const registerView = document.querySelector("#register-view");
+const loginView = document.querySelector("#login-view");
+const showLoginBtn = document.querySelector("#show-login");
+const showRegisterBtn = document.querySelector("#show-register");
+
+if (showLoginBtn && registerView && loginView) {
+  showLoginBtn.addEventListener("click", function () {
+    registerView.style.display = "none";
+    loginView.style.display = "block";
+  });
+}
+
+if (showRegisterBtn && registerView && loginView) {
+  showRegisterBtn.addEventListener("click", function () {
+    loginView.style.display = "none";
+    registerView.style.display = "block";
+  });
 }
 
 const registerForm = document.querySelector("#register-form");
@@ -759,10 +783,15 @@ if (registerForm) {
   registerForm.addEventListener("submit", function (event) {
     event.preventDefault();
 
+    const name = document.querySelector("#reg-name").value.trim();
     const email = document.querySelector("#reg-email").value.trim();
     const password = document.querySelector("#reg-password").value;
     const confirm = document.querySelector("#reg-confirm").value;
 
+    if (name.length < 2) {
+      setMsg("reg-msg", "Please enter your name.", false);
+      return;
+    }
     if (email.indexOf("@") === -1) {
       setMsg("reg-msg", "Enter a valid email.", false);
       return;
@@ -785,14 +814,18 @@ if (registerForm) {
       return;
     }
 
-    users.push({ email: email, password: password });
+    // redirect user after signup
+    users.push({ name: name, email: email, password: password });
     localStorage.setItem("users", JSON.stringify(users));
     registerForm.reset();
-    setMsg(
-      "reg-msg",
-      "Account created. Save this email and password. You can login now.",
-      true
-    );
+    setMsg("reg-msg", "Account created. Save your email and password. You can sign in now.", true);
+
+    setTimeout(function () {
+      if (registerView && loginView) {
+        registerView.style.display = "none";
+        loginView.style.display = "block";
+      }
+    }, 2500);
   });
 }
 
@@ -804,34 +837,69 @@ if (loginForm) {
     const email = document.querySelector("#login-email").value.trim();
     const password = document.querySelector("#login-password").value;
     const users = getUsers();
-
     const user = users.find(function (item) {
       return item.email === email;
     });
 
     if (!user) {
-      setMsg("login-msg", "User not registered.", false);
+      setMsg("login-msg", "This email is not registered.", false);
       return;
     }
-
     if (user.password !== password) {
       setMsg("login-msg", "Password does not match.", false);
       return;
     }
 
-    localStorage.setItem("currentUser", JSON.stringify({ email: user.email }));
-    setMsg("login-msg", "Login successful.", true);
-
-    setTimeout(function () {
-      window.location.href = "checkout.html";
-    }, 800);
-  });
+    localStorage.setItem(
+      "currentUser",
+      JSON.stringify({ name: user.name || "", email: user.email })
+    );
+    const hello = user.name ? "Welcome " + user.name : "Login successful.";
+    setMsg("login-msg", hello, true);
+    setTimeout(afterLoginGo, 3000);  });
 }
 
 const checkoutList = document.querySelector("#checkout-list");
 if (checkoutList && !getCurrentUser()) {
-  window.location.href = "login.html";
+  window.location.href = "login.html?next=checkout";
 }
+
+function showAuthHeader() {
+  const link = document.querySelector("#auth-link");
+  const hello = document.querySelector("#welcome-line");
+  const user = getCurrentUser();
+
+  if (link) {
+    if (user) {
+      link.textContent = "Logout";
+      link.href = "#";
+      link.onclick = function (event) {
+        event.preventDefault();
+        localStorage.removeItem("currentUser");
+        window.location.href = "index.html";
+      };
+    } else {
+      link.textContent = "Login";
+      link.href = "login.html";
+    }
+  }
+
+  if (hello && user && user.name) {
+    hello.textContent = "Hello welcome " + user.name;
+  }
+
+  // welcome user
+    const welcomeUser = document.querySelector("#welcome-user");
+  if (welcomeUser) {
+    if (user && user.name) {
+      welcomeUser.textContent = "Hello " + user.name;
+    } else {
+      welcomeUser.textContent = "";
+    }
+  }
+}
+
+showAuthHeader();
 
 loadOneProduct();
 loadProducts();

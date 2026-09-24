@@ -8,35 +8,65 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body class="bg-amber-50">
-  <main class="max-w-md mx-auto px-4 py-12">
-        <h1 class="text-3xl mb-6">Account</h1>
+  <main class="max-w-md mx-auto px-4 py-16">
+    <p id="welcome-line" class="text-center mb-6"></p>
 
-    <p class="text-sm mb-6">
-      Write down your email and password and keep them safe.
-      You will need the same details every time you login.
-    </p>
+    <div class="border border-gray-300 bg-white p-8">
+      <div id="register-view">
+        <h1 class="text-xl text-center mb-2">Create account</h1>
+        <p class="text-sm text-center text-gray-600 mb-6">
+          Write down your email and password and keep them safe.
+        </p>
+        <form id="register-form" class="space-y-4">
+          <div>
+            <label class="text-sm">Name</label>
+            <input id="reg-name" type="text" class="w-full border px-3 py-2">
+          </div>
+          <div>
+            <label class="text-sm">Email</label>
+            <input id="reg-email" type="email" class="w-full border px-3 py-2">
+          </div>
+          <div>
+            <label class="text-sm">Password</label>
+            <input id="reg-password" type="password" class="w-full border px-3 py-2">
+          </div>
+          <div>
+            <label class="text-sm">Confirm password</label>
+            <input id="reg-confirm" type="password" class="w-full border px-3 py-2">
+          </div>
+          <p id="reg-msg" class="text-sm"></p>
+          <button type="submit" class="w-full bg-black text-white py-2">Register</button>
+        </form>
+        <p class="text-sm text-center mt-4">
+          Already have an account?
+          <button type="button" id="show-login" class="underline">Sign in</button>
+        </p>
+      </div>
 
-    <h2 class="text-lg mb-2">Register</h2>
-    <form id="register-form" class="space-y-3 mb-8">
-      <input id="reg-email" type="email" placeholder="Email" class="w-full border px-3 py-2">
-      <input id="reg-password" type="password" placeholder="Password" class="w-full border px-3 py-2">
-      <input id="reg-confirm" type="password" placeholder="Confirm password" class="w-full border px-3 py-2">
-      <p id="reg-msg" class="text-sm"></p>
-      <button type="submit" class="bg-black text-white px-6 py-2">Create account</button>
-    </form>
+      <div id="login-view" style="display: none;">
+        <h1 class="text-xl text-center mb-6">Sign in</h1>
+        <form id="login-form" class="space-y-4">
+          <div>
+            <label class="text-sm">Email</label>
+            <input id="login-email" type="email" class="w-full border px-3 py-2">
+          </div>
+          <div>
+            <label class="text-sm">Password</label>
+            <input id="login-password" type="password" class="w-full border px-3 py-2">
+          </div>
+          <p id="login-msg" class="text-sm"></p>
+          <button type="submit" class="w-full bg-black text-white py-2">Sign in</button>
+        </form>
+        <p class="text-sm text-center mt-4">
+          New here?
+          <button type="button" id="show-register" class="underline">Create account</button>
+        </p>
+      </div>
+    </div>
 
-    <h2 class="text-lg mb-2">Login</h2>
-    <form id="login-form" class="space-y-3">
-      <input id="login-email" type="email" placeholder="Email" class="w-full border px-3 py-2">
-      <input id="login-password" type="password" placeholder="Password" class="w-full border px-3 py-2">
-      <p id="login-msg" class="text-sm"></p>
-      <button type="submit" class="bg-black text-white px-6 py-2 rounded-lg">Login</button>
-    </form>
-
-    <p class="mt-6">
+    <p class="text-center mt-6">
       <a href="index.html" class="underline text-sm">Back to shop</a>
     </p>
-
   </main>
   <script src="main.js"></script>
 </body>
