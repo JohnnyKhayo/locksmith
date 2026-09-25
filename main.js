@@ -1,11 +1,14 @@
+
 const API = "http://localhost:3001/api/products";
 
 let allProducts = [];
 
 function formatPrice(price) {
-  return "KSh" + " " + Number(price).toLocaleString() + ".00";
+  return "KSh " + Number(price).toLocaleString() + ".00";
 }
-// Build the HTML for one product card
+
+// catalogue: cards, filters, fetch, product detail
+
 
 function productCard(product) {
   const soldOut = product.stock <= 0;
@@ -28,24 +31,25 @@ function productCard(product) {
     </div>
   `;
 }
-// Draw products on the page
+
 function showProducts() {
   const featured = document.querySelector("#featured-grid");
   const all = document.querySelector("#product-grid");
   const status = document.querySelector("[data-product-status]");
 
   if (featured) {
-    const list = allProducts.filter(function (p) {
-      return p.featured;
-    });
-    featured.innerHTML = list.map(productCard).join("");
+    featured.innerHTML = allProducts
+      .filter(function (p) {
+        return p.featured;
+      })
+      .map(productCard)
+      .join("");
   }
 
   if (!all) return;
 
-    // Read filter controls
   const search = document.querySelector("#search-input");
-  const series = document.querySelector("#series-select");
+   const series = document.querySelector("#series-select");
   const sort = document.querySelector("#sort-select");
   const inStock = document.querySelector("#in-stock-only");
 
@@ -54,8 +58,6 @@ function showProducts() {
   const sortValue = sort ? sort.value : "default";
   const stockOnly = inStock ? inStock.checked : false;
 
-    // Keep products that match search, series, and stock
-
   let list = allProducts.filter(function (p) {
     const text = (p.name + " " + p.sku).toLowerCase();
     const okSearch = text.indexOf(searchText) !== -1;
@@ -63,8 +65,6 @@ function showProducts() {
     const okStock = !stockOnly || p.stock > 0;
     return okSearch && okSeries && okStock;
   });
-
-    // Sort the list if the user picked a sort option
 
   if (sortValue === "price-asc") {
     list.sort(function (a, b) {
@@ -82,20 +82,17 @@ function showProducts() {
     });
   }
 
-  // Put cards on the page, or a short message if nothing matches
-
-  if (list.length === 0) {
-    all.innerHTML = "<p>No products match your filters.</p>";
-  } else {
-    all.innerHTML = list.map(productCard).join("");
-  }
+  all.innerHTML =
+    list.length === 0
+      ? "<p>No products match your filters.</p>"
+      : list.map(productCard).join("");
 
   if (status) {
-    status.textContent = "Showing " + list.length + " of " + allProducts.length + " locks";
+    status.textContent =
+      "Showing " + list.length + " of " + allProducts.length + " locks";
   }
 }
 
-// Get products from the API, then draw them
 async function loadProducts() {
   const status = document.querySelector("[data-product-status]");
   try {
@@ -111,7 +108,6 @@ async function loadProducts() {
   }
 }
 
-// When the user types or changes a filter, draw the list again
 const search = document.querySelector("#search-input");
 const series = document.querySelector("#series-select");
 const sort = document.querySelector("#sort-select");
@@ -122,7 +118,73 @@ if (series) series.addEventListener("change", showProducts);
 if (sort) sort.addEventListener("change", showProducts);
 if (inStock) inStock.addEventListener("change", showProducts);
 
-// dark & light theme functionality
+// Read ?search= and ?series= so h/ftr links pre-fill the filters
+const params = new URLSearchParams(window.location.search);
+if (search) {
+  const searchWord = params.get("search");
+  if (searchWord) search.value = searchWord;
+}
+if (series) {
+  const seriesWord = params.get("series");
+  if (seriesWord) series.value = seriesWord;
+}
+
+
+
+async function loadOneProduct() {
+  const box = document.querySelector("#product-detail");
+  if (!box) return;
+
+  const id = new URLSearchParams(window.location.search).get("id");
+  if (!id) {
+    box.innerHTML = "<p>No product selected.</p>";
+    return;
+  }
+
+
+  try {
+    const response = await fetch(API);
+    if (!response.ok) throw new Error("bad response");
+    const products = await response.json();
+    allProducts = products;
+
+    const p = products.find(function (item) {
+      return String(item.id) === String(id);
+    });
+    if (!p) {
+      box.innerHTML = "<p>Product not found.</p>";
+      return;
+    }
+
+    box.innerHTML = `
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <img src="${p.image}" alt="${p.name}" class="w-full object-cover">
+        <div>
+          <p class="text-sm mb-2">${p.series} Series · ${p.sku}</p>
+          <h1 class="text-3xl mb-4">${p.name}</h1>
+          <p class="text-xl mb-4">${formatPrice(p.price)}</p>
+          <p class="mb-4">${p.description}</p>
+          <p class="mb-6">${p.stock > 0 ? "In stock" : "Sold out"}</p>
+          <button
+          type="button"
+            class="add-cart-btn bg-black text-white px-6 py-2 mb-4 rounded-md"
+            data-id="${p.id}"
+            ${p.stock <= 0 ? "disabled" : ""}
+          >
+            ${p.stock <= 0 ? "Sold out" : "Add to cart"}
+          </button>
+        <a href="ourproducts.html" class="underline">Back to shop</a>
+        </div>
+      </div>
+    `;
+  } catch (error) {
+    box.innerHTML = "<p>Could not load product. Start the API.</p>";
+  }
+}
+
+// Site tools: theme, country, hours, cookies, header search
+
+// Light / Dark. Class goes on body. Choice saved so refresh keeps it.
 function setTheme(name) {
   if (name === "dark") {
     document.body.classList.add("dark-theme");
@@ -134,65 +196,48 @@ function setTheme(name) {
 
 const lightBtn = document.querySelector("#light-btn");
 const darkBtn = document.querySelector("#dark-btn");
-
 if (lightBtn) {
   lightBtn.addEventListener("click", function () {
     setTheme("light");
   });
 }
-
 if (darkBtn) {
   darkBtn.addEventListener("click", function () {
     setTheme("dark");
   });
 }
-
-const savedTheme = localStorage.getItem("theme");
-if (savedTheme === "dark") {
+if (localStorage.getItem("theme") === "dark") {
   setTheme("dark");
 }
 
-// country/region dropdown
+// Footer Kenya/Uganda/Tanzania. Saves the name only.
 const countrySelect = document.querySelector("#country-select");
-
 if (countrySelect) {
   const savedCountry = localStorage.getItem("country");
-  if (savedCountry) {
-    countrySelect.value = savedCountry;
-  }
-
+  if (savedCountry) countrySelect.value = savedCountry;
   countrySelect.addEventListener("change", function () {
     localStorage.setItem("country", countrySelect.value);
   });
 }
 
-// open hours functionality
-function showOpenHours() {
+// Open now/closed.
+ function showOpenHours() {
   const status = document.querySelector("#open-status");
   if (!status) return;
-
-  const now = new Date();
+       const now = new Date();
   const eatHour = now.getUTCHours() + 3;
   const day = now.getUTCDay();
-
-  const isWeekday = day >= 1 && day <= 6;
-  const isOpenHour = eatHour >= 7 && eatHour < 18;
-
-  if (isWeekday && isOpenHour) {
-    status.textContent = "Open now";
-  } else {
-    status.textContent = "Closed, we reply next business day";
-  }
+  const open = day >= 1 && day <= 6 && eatHour >= 7 && eatHour < 18;
+  status.textContent = open ? "Open now" : "Closed, we reply next business day";
 }
-
 showOpenHours();
 
-// cookie functionality
 function setCookie(name, value, days) {
   const date = new Date();
   date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
   document.cookie = name + "=" + value + ";expires=" + date.toUTCString() + ";path=/";
 }
+
 
 function getCookie(name) {
   const cookies = document.cookie.split(";");
@@ -205,22 +250,19 @@ function getCookie(name) {
   return "";
 }
 
-// cookie button
+// deny/accept cookie banner only if the visitor.
 const banner = document.querySelector("#cookie-banner");
 const acceptBtn = document.querySelector("#cookie-accept");
 const denyBtn = document.querySelector("#cookie-deny");
-
 if (banner && getCookie("cookiesAccepted") === "") {
   banner.style.display = "block";
 }
-
 if (acceptBtn) {
   acceptBtn.addEventListener("click", function () {
     setCookie("cookiesAccepted", "yes", 7);
     banner.style.display = "none";
   });
 }
-
 if (denyBtn) {
   denyBtn.addEventListener("click", function () {
     setCookie("cookiesAccepted", "no", 7);
@@ -228,46 +270,24 @@ if (denyBtn) {
   });
 }
 
-// search header icon
+// Enter in the header box t All Products with ?search= HEADER
 const headerSearch = document.querySelector("#header-search");
-
 if (headerSearch) {
   headerSearch.addEventListener("keydown", function (event) {
     if (event.key === "Enter") {
-      const text = headerSearch.value;
-      window.location.href = "ourproducts.html?search=" + encodeURIComponent(text);
+      window.location.href =
+        "ourproducts.html?search=" + encodeURIComponent(headerSearch.value);
     }
   });
 }
 
-const pageSearch = document.querySelector("#search-input");
-
-if (pageSearch) {
-  const params = new URLSearchParams(window.location.search);
-  const searchWord = params.get("search");
-  if (searchWord) {
-    pageSearch.value = searchWord;
-  }
-}
-// this enables from product series to filter
-const seriesSelect = document.querySelector("#series-select");
-if (seriesSelect) {
-  const seriesWord = new URLSearchParams(window.location.search).get("series");
-  if (seriesWord) {
-    seriesSelect.value = seriesWord;
-  }
-}
-
-
-// cart
+// Cart: add, qty, remove, badge, drawer, localStorage
 function getCart() {
   const saved = localStorage.getItem("cart");
-  if (saved) {
-    return JSON.parse(saved);
-  }
-  return [];
+  return saved ? JSON.parse(saved) : [];
 }
 
+// Money in bg: price x qty for every line.
 function cartSubtotal(cart) {
   let sum = 0;
   for (let i = 0; i < cart.length; i++) {
@@ -276,10 +296,10 @@ function cartSubtotal(cart) {
   return sum;
 }
 
+// Number on the cart icon.
 function showCartCount() {
   const countBox = document.querySelector("#cart-count");
   if (!countBox) return;
-
   const cart = getCart();
   let total = 0;
   for (let i = 0; i < cart.length; i++) {
@@ -288,6 +308,7 @@ function showCartCount() {
   countBox.textContent = total;
 }
 
+// + /- Remove, subtotal, offer text.(draws the drawer)
 function showCart() {
   const list = document.querySelector("#cart-list");
   const offer = document.querySelector("#cart-offer");
@@ -295,7 +316,6 @@ function showCart() {
   if (!list) return;
 
   const cart = getCart();
-
   if (cart.length === 0) {
     list.innerHTML = "<p>Your cart is empty.</p>";
     if (offer) offer.textContent = "";
@@ -307,48 +327,33 @@ function showCart() {
   for (let i = 0; i < cart.length; i++) {
     const item = cart[i];
     const line = item.price * item.qty;
-    html =
-      html +
+    html +=
       "<div class='mb-3'>" +
       "<p>" + item.name + "</p>" +
       "<p class='text-sm'>" +
-      formatPrice(item.price) +
-      " × " +
-      item.qty +
-      " = " +
-      formatPrice(line) +
+      formatPrice(item.price) + " x " + item.qty + " = " + formatPrice(line) +
       "</p>" +
-      "<button type='button' class='qty-minus border px-2' data-id='" +
-      item.id +
-      "'>-</button> " +
-      "<button type='button' class='qty-plus border px-2' data-id='" +
-      item.id +
-      "'>+</button> " +
-      "<button type='button' class='qty-remove border px-2' data-id='" +
-      item.id +
-      "'>Remove</button>" +
+      "<button type='button' class='qty-minus border px-2' data-id='" + item.id + "'>-</button> " +
+       "<button type='button' class='qty-plus border px-2' data-id='" + item.id + "'>+</button> " +
+      "<button type='button' class='qty-remove border px-2' data-id='" + item.id + "'>Remove</button>" +
       "</div>";
   }
   list.innerHTML = html;
 
   const sum = cartSubtotal(cart);
-  if (subtotalBox) {
-    subtotalBox.textContent = "Subtotal: " + formatPrice(sum);
-  }
-
+  if (subtotalBox) subtotalBox.textContent = "Subtotal: " + formatPrice(sum);
   if (offer) {
     if (sum >= 100000) {
       offer.textContent = "5% off unlocked. Free Nairobi delivery unlocked.";
     } else if (sum >= 50000) {
       offer.textContent = "Free Nairobi delivery unlocked. Add more for 5% off.";
     } else {
-      const need = 50000 - sum;
-      offer.textContent = "Add " + formatPrice(need) + " more for free Nairobi delivery.";
+      offer.textContent = "Add " + formatPrice(50000 - sum) + " more for free Nairobi delivery.";
     }
   }
 }
 
-// offer line
+// Green offer line.
 function showOfferLine() {
   const line = document.querySelector("#offer-line");
   if (!line) return;
@@ -363,6 +368,7 @@ function showOfferLine() {
   }
 }
 
+// Write cart, then refresh badge, drawer, and offer line.
 function saveCart(cart) {
   localStorage.setItem("cart", JSON.stringify(cart));
   showCartCount();
@@ -370,65 +376,57 @@ function saveCart(cart) {
   showOfferLine();
 }
 
+// Same id again → qty + 1. New id → new line. Needs allProducts from fetch.
 function addToCart(id) {
   const product = allProducts.find(function (item) {
     return String(item.id) === String(id);
   });
-  if (!product) return;
-  if (product.stock <= 0) return;
+  if (!product || product.stock <= 0) return;
 
   const cart = getCart();
   const found = cart.find(function (item) {
     return String(item.id) === String(id);
   });
-
   if (found) {
     found.qty = found.qty + 1;
   } else {
-    cart.push({
-      id: product.id,
-      name: product.name,
-      price: product.price,
-      qty: 1
-    });
+    cart.push({ id: product.id, name: product.name, price: product.price, qty: 1 });
   }
-
   saveCart(cart);
 }
 
+// amount is +1 or -1. Qty 0 removes the line.
 function changeQty(id, amount) {
   const cart = getCart();
   const found = cart.find(function (item) {
     return String(item.id) === String(id);
   });
   if (!found) return;
-
   found.qty = found.qty + amount;
   if (found.qty <= 0) {
-    const next = cart.filter(function (item) {
+    saveCart(cart.filter(function (item) {
       return String(item.id) !== String(id);
-    });
-    saveCart(next);
+    }));
     return;
   }
   saveCart(cart);
 }
 
 function removeItem(id) {
-  const cart = getCart().filter(function (item) {
+  saveCart(getCart().filter(function (item) {
     return String(item.id) !== String(id);
-  });
-  saveCart(cart);
+  }));
 }
 
+// a listener for Add to cart and drawer buttons (class names).
 document.addEventListener("click", function (event) {
   if (event.target.classList.contains("add-cart-btn")) {
     addToCart(event.target.getAttribute("data-id"));
   }
-  if (event.target.classList.contains("qty-plus")) {
+    if (event.target.classList.contains("qty-plus")) {
     changeQty(event.target.getAttribute("data-id"), 1);
   }
-  if (event.target.classList.contains("qty-minus")) {
+   if (event.target.classList.contains("qty-minus")) {
     changeQty(event.target.getAttribute("data-id"), -1);
   }
   if (event.target.classList.contains("qty-remove")) {
@@ -439,7 +437,6 @@ document.addEventListener("click", function (event) {
 const cartBtn = document.querySelector("#cart-btn");
 const cartDrawer = document.querySelector("#cart-drawer");
 const cartClose = document.querySelector("#cart-close");
-
 if (cartBtn && cartDrawer) {
   cartBtn.addEventListener("click", function (event) {
     event.preventDefault();
@@ -447,167 +444,22 @@ if (cartBtn && cartDrawer) {
     showCart();
   });
 }
-
 if (cartClose && cartDrawer) {
   cartClose.addEventListener("click", function () {
     cartDrawer.classList.remove("open");
   });
 }
 
-// calls
 showCartCount();
 showCart();
 showOfferLine();
 
-// form
-function showError(id, message) {
-  const box = document.querySelector("#" + id);
-  if (box) box.textContent = message;
-}
+// Checkout (simulated). pickup or deliver
 
-function clearErrors() {
-  showError("name-error", "");
-  showError("email-error", "");
-  showError("phone-error", "");
-  showError("subject-error", "");
-  showError("comment-error", "");
-}
-
-function formIsValid() {
-  clearErrors();
-  let ok = true;
-
-  const name = document.querySelector("#name").value.trim();
-  const email = document.querySelector("#email").value.trim();
-  const phone = document.querySelector("#phone").value.trim();
-  const subject = document.querySelector("#subject").value;
-  const comment = document.querySelector("#comment").value.trim();
-
-  if (name.length < 2) {
-    showError("name-error", "Please enter your name");
-    ok = false;
-  }
-
-  if (email.indexOf("@") === -1) {
-    showError("email-error", "Please enter a valid email");
-    ok = false;
-  }
-
-  if (phone.length < 10) {
-    showError("phone-error", "Please enter a phone number");
-    ok = false;
-  }
-
-  if (subject === "") {
-    showError("subject-error", "Please choose a subject");
-    ok = false;
-  }
-
-  if (comment.length < 10) {
-    showError("comment-error", "Please write a longer comment");
-    ok = false;
-  }
-
-  return ok;
-}
-
-const contactForm = document.querySelector("#contact-form");
-if (contactForm) {
-  contactForm.addEventListener("submit", function (event) {
-    event.preventDefault();
-
-    const okBox = document.querySelector("#form-ok");
-    const sendBtn = contactForm.querySelector("button[type='submit']");
-
-    if (!formIsValid()) {
-      if (okBox) okBox.textContent = "";
-      return;
-    }
-
-    sendBtn.disabled = true;
-    sendBtn.textContent = "Sending...";
-    if (okBox) okBox.textContent = "";
-
-    const enquiry = {
-      name: document.querySelector("#name").value.trim(),
-      email: document.querySelector("#email").value.trim(),
-      phone: document.querySelector("#phone").value.trim(),
-      subject: document.querySelector("#subject").value,
-      comment: document.querySelector("#comment").value.trim()
-    };
-
-    setTimeout(function () {
-      localStorage.setItem("enquiry", JSON.stringify(enquiry));
-      sendBtn.disabled = false;
-      sendBtn.textContent = "Send";
-      contactForm.reset();
-      if (okBox) okBox.textContent = "Message sent. We will get back to you.";
-    }, 1500);
-  });
-}
-
-// Product detail page
-async function loadOneProduct() {
-  const box = document.querySelector("#product-detail");
-  if (!box) return;
-
-  const params = new URLSearchParams(window.location.search);
-  const id = params.get("id");
-
-  if (!id) {
-    box.innerHTML = "<p>No product selected.</p>";
-    return;
-  }
-
-  try {
-      const response = await fetch(API);
-      if (!response.ok) throw new Error("bad response");
-      const products = await response.json();
-      allProducts = products;
-      const p = products.find(function (item) {
-        return String(item.id) === String(id);
-      });
-
-      if (!p) {
-        box.innerHTML = "<p>Product not found.</p>";
-        return;
-      }
-    
-    // with add to cart btn products page
-    box.innerHTML = `
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <img src="${p.image}" alt="${p.name}" class="w-full object-cover">
-          <div>
-            <p class="text-sm mb-2">${p.series} Series · ${p.sku}</p>
-            <h1 class="text-3xl mb-4">${p.name}</h1>
-            <p class="text-xl mb-4">${formatPrice(p.price)}</p>
-            <p class="mb-4">${p.description}</p>
-            <p class="mb-6">${p.stock > 0 ? "In stock" : "Sold out"}</p>
-            <button
-              type="button"
-              class="add-cart-btn bg-black text-white px-6 py-2 mb-4 rounded-md"
-              data-id="${p.id}"
-              ${p.stock <= 0 ? "disabled" : ""}
-            >
-              ${p.stock <= 0 ? "Sold out" : "Add to cart"}
-            </button>
-            <a href="ourproducts.html" class="underline">Back to shop</a>
-          </div>
-        </div>
-      `;
-    } catch (error) {
-      box.innerHTML = "<p>Could not load product. Start the API.</p>";
-    }
-  }
-
-// add simulate checkout
 function cartTotals() {
   const cart = getCart();
   const subtotal = cartSubtotal(cart);
-  let discount = 0;
-  if (subtotal >= 100000) {
-    discount = subtotal * 0.05;
-  }
+  const discount = subtotal >= 100000 ? subtotal * 0.05 : 0;
   return {
     cart: cart,
     subtotal: subtotal,
@@ -629,9 +481,7 @@ function showCheckout() {
   const deliveryBox = document.querySelector("#checkout-delivery");
   const totalBox = document.querySelector("#checkout-total");
 
-  if (extra) {
-    extra.style.display = wantDeliver ? "block" : "none";
-  }
+  if (extra) extra.style.display = wantDeliver ? "block" : "none";
 
   if (data.cart.length === 0) {
     list.innerHTML = "<p>Your cart is empty.</p>";
@@ -644,21 +494,16 @@ function showCheckout() {
   let html = "";
   for (let i = 0; i < data.cart.length; i++) {
     const item = data.cart[i];
-    html =
-      html +
+    html +=
       "<p class='mb-2'>" +
-      item.name +
-      " × " +
-      item.qty +
-      " - " +
-      formatPrice(item.price * item.qty) +
+      item.name + " x " + item.qty + " - " + formatPrice(item.price * item.qty) +
       "</p>";
   }
   list.innerHTML = html;
 
+  // Pickup = 0. Nairobi + 50k+ = 0.
   let delivery = 0;
   let deliveryText = "Pickup - no delivery fee";
-
   if (wantDeliver) {
     if (nairobi && nairobi.checked && data.subtotal >= 50000) {
       delivery = 0;
@@ -673,13 +518,11 @@ function showCheckout() {
   }
 
   if (offer) {
-    if (data.discount > 0) {
-      offer.textContent = "5% off: -" + formatPrice(data.discount);
-    } else {
-      offer.textContent = "Spend KSh 100,000 to unlock 5% off";
-    }
+    offer.textContent =
+      data.discount > 0
+        ? "5% off: -" + formatPrice(data.discount)
+        : "Spend KSh 100,000 to unlock 5% off";
   }
-
   if (deliveryBox) deliveryBox.textContent = deliveryText;
   if (totalBox) {
     totalBox.textContent = "To pay: " + formatPrice(data.afterDiscount + delivery);
@@ -696,9 +539,7 @@ if (checkoutPage) {
   }
 
   const nairobi = document.querySelector("#nairobi-check");
-  if (nairobi) {
-    nairobi.addEventListener("change", showCheckout);
-  }
+  if (nairobi) nairobi.addEventListener("change", showCheckout);
 
   const placeBtn = document.querySelector("#place-order");
   if (placeBtn) {
@@ -717,7 +558,6 @@ if (checkoutPage) {
         if (msg) msg.textContent = "Price check failed. Order not placed.";
         return;
       }
-
       localStorage.setItem("lastOrder", JSON.stringify(data.cart));
       saveCart([]);
       if (msg) msg.textContent = "Order placed.";
@@ -726,21 +566,103 @@ if (checkoutPage) {
   }
 }
 
-// register and login
+// CONTACT FORM
+// Here check fields then stop submit if bad then show Sending... to save enquiry.
+
+function showError(id, message) {
+  const box = document.querySelector("#" + id);
+  if (box) box.textContent = message;
+}
+
+function clearErrors() {
+  showError("name-error", "");
+  showError("email-error", "");
+  showError("phone-error", "");
+  showError("subject-error", "");
+  showError("comment-error", "");
+}
+
+function formIsValid() {
+  clearErrors();
+  let ok = true;
+  const name = document.querySelector("#name").value.trim();
+  const email = document.querySelector("#email").value.trim();
+  const phone = document.querySelector("#phone").value.trim();
+  const subject = document.querySelector("#subject").value;
+  const comment = document.querySelector("#comment").value.trim();
+
+  if (name.length < 2) {
+    showError("name-error", "Please enter your name");
+    ok = false;
+  }
+  if (email.indexOf("@") === -1) {
+    showError("email-error", "Please enter a valid email");
+    ok = false;
+  }
+  if (phone.length < 10) {
+    showError("phone-error", "Please enter a phone number");
+    ok = false;
+  }
+  if (subject === "") {
+    showError("subject-error", "Please choose a subject");
+    ok = false;
+  }
+  if (comment.length < 10) {
+    showError("comment-error", "Please write a longer comment");
+    ok = false;
+  }
+  return ok;
+}
+
+const contactForm = document.querySelector("#contact-form");
+if (contactForm) {
+  contactForm.addEventListener("submit", function (event) {
+    event.preventDefault();
+    const okBox = document.querySelector("#form-ok");
+    const sendBtn = contactForm.querySelector("button[type='submit']");
+
+    // Invalid → errors stay, no save.
+    if (!formIsValid()) {
+      if (okBox) okBox.textContent = "";
+      return;
+    }
+
+    sendBtn.disabled = true;
+    sendBtn.textContent = "Sending...";
+    if (okBox) okBox.textContent = "";
+
+    const enquiry = {
+      name: document.querySelector("#name").value.trim(),
+      email: document.querySelector("#email").value.trim(),
+      phone: document.querySelector("#phone").value.trim(),
+      subject: document.querySelector("#subject").value,
+      comment: document.querySelector("#comment").value.trim()
+    };
+
+    // No real email server..
+    setTimeout(function () {
+      localStorage.setItem("enquiry", JSON.stringify(enquiry));
+      sendBtn.disabled = false;
+      sendBtn.textContent = "Send";
+      contactForm.reset();
+      if (okBox) okBox.textContent = "Message sent. We will get back to you.";
+    }, 1500);
+  });
+}
+
+// Account
+// Users live in localStorage
+// Browse and add to cart with no login.
+// Checkout with no currentUser t0> login.html?next=checkout
+
 function getUsers() {
   const saved = localStorage.getItem("users");
-  if (saved) {
-    return JSON.parse(saved);
-  }
-  return [];
+  return saved ? JSON.parse(saved) : [];
 }
 
 function getCurrentUser() {
   const saved = localStorage.getItem("currentUser");
-  if (saved) {
-    return JSON.parse(saved);
-  }
-  return null;
+  return saved ? JSON.parse(saved) : null;
 }
 
 function setMsg(id, text, ok) {
@@ -750,13 +672,10 @@ function setMsg(id, text, ok) {
   box.style.color = ok ? "rgb(0, 128, 0)" : "rgb(180, 0, 0)";
 }
 
+// Came from checkout → go back there. Header Login → Home.
 function afterLoginGo() {
   const next = new URLSearchParams(window.location.search).get("next");
-  if (next === "checkout") {
-    window.location.href = "checkout.html";
-  } else {
-    window.location.href = "index.html";
-  }
+  window.location.href = next === "checkout" ? "checkout.html" : "index.html";
 }
 
 const registerView = document.querySelector("#register-view");
@@ -770,7 +689,6 @@ if (showLoginBtn && registerView && loginView) {
     loginView.style.display = "block";
   });
 }
-
 if (showRegisterBtn && registerView && loginView) {
   showRegisterBtn.addEventListener("click", function () {
     loginView.style.display = "none";
@@ -782,7 +700,6 @@ const registerForm = document.querySelector("#register-form");
 if (registerForm) {
   registerForm.addEventListener("submit", function (event) {
     event.preventDefault();
-
     const name = document.querySelector("#reg-name").value.trim();
     const email = document.querySelector("#reg-email").value.trim();
     const password = document.querySelector("#reg-password").value;
@@ -806,20 +723,17 @@ if (registerForm) {
     }
 
     const users = getUsers();
-    const exists = users.find(function (user) {
-      return user.email === email;
-    });
-    if (exists) {
+    if (users.find(function (user) { return user.email === email; })) {
       setMsg("reg-msg", "That email is already registered. Please login.", false);
       return;
     }
 
-    // redirect user after signup
     users.push({ name: name, email: email, password: password });
     localStorage.setItem("users", JSON.stringify(users));
     registerForm.reset();
     setMsg("reg-msg", "Account created. Save your email and password. You can sign in now.", true);
 
+    // After the green message, show the Sign in card.
     setTimeout(function () {
       if (registerView && loginView) {
         registerView.style.display = "none";
@@ -833,11 +747,9 @@ const loginForm = document.querySelector("#login-form");
 if (loginForm) {
   loginForm.addEventListener("submit", function (event) {
     event.preventDefault();
-
     const email = document.querySelector("#login-email").value.trim();
     const password = document.querySelector("#login-password").value;
-    const users = getUsers();
-    const user = users.find(function (item) {
+    const user = getUsers().find(function (item) {
       return item.email === email;
     });
 
@@ -854,19 +766,20 @@ if (loginForm) {
       "currentUser",
       JSON.stringify({ name: user.name || "", email: user.email })
     );
-    const hello = user.name ? "Welcome " + user.name : "Login successful.";
-    setMsg("login-msg", hello, true);
-    setTimeout(afterLoginGo, 3000);  });
+    setMsg("login-msg", user.name ? "Welcome " + user.name : "Login successful.", true);
+    setTimeout(afterLoginGo, 3000);
+  });
 }
 
-const checkoutList = document.querySelector("#checkout-list");
-if (checkoutList && !getCurrentUser()) {
+// Checkout page + not logged in → must sign in first.
+if (document.querySelector("#checkout-list") && !getCurrentUser()) {
   window.location.href = "login.html?next=checkout";
 }
 
 function showAuthHeader() {
   const link = document.querySelector("#auth-link");
   const hello = document.querySelector("#welcome-line");
+  const welcomeUser = document.querySelector("#welcome-user");
   const user = getCurrentUser();
 
   if (link) {
@@ -883,22 +796,9 @@ function showAuthHeader() {
       link.href = "login.html";
     }
   }
-
-  if (hello && user && user.name) {
-    hello.textContent = "Hello welcome " + user.name;
-  }
-
-  // welcome user
-    const welcomeUser = document.querySelector("#welcome-user");
-  if (welcomeUser) {
-    if (user && user.name) {
-      welcomeUser.textContent = "Hello " + user.name;
-    } else {
-      welcomeUser.textContent = "";
-    }
-  }
+  if (hello && user && user.name) hello.textContent = "Hello welcome " + user.name;
+  if (welcomeUser) welcomeUser.textContent = user && user.name ? "Hello " + user.name : "";
 }
-
 showAuthHeader();
 
 loadOneProduct();
