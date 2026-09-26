@@ -1,3 +1,4 @@
+
 const API = "http://localhost:3001/api/products";
 
 let allProducts = [];
@@ -360,13 +361,13 @@ function showCart() {
   if (subtotalBox) subtotalBox.textContent = "Subtotal: " + formatPrice(sum);
   if (offer) {
     if (sum >= 100000) {
-      offer.textContent = "5% off unlocked. Free Nairobi delivery unlocked.";
+      offer.textContent = "5% off unlocked. Free Nairobi CBD delivery unlocked.";
     } else if (sum >= 50000) {
       offer.textContent =
-        "Free Nairobi delivery unlocked. Add more for 5% off.";
+        "Free Nairobi CBD delivery unlocked. Add more for 5% off.";
     } else {
       offer.textContent =
-        "Add " + formatPrice(50000 - sum) + " more for free Nairobi delivery.";
+        "Add " + formatPrice(50000 - sum) + " more for free Nairobi CBD delivery.";
     }
   }
 }
@@ -377,12 +378,12 @@ function showOfferLine() {
   if (!line) return;
   const sum = cartSubtotal(getCart());
   if (sum >= 100000) {
-    line.textContent = "5% off and free Nairobi delivery unlocked";
+    line.textContent = "5% off and free Nairobi CBD delivery unlocked";
   } else if (sum >= 50000) {
-    line.textContent = "Free Nairobi delivery unlocked";
+    line.textContent = "Free Nairobi CBD delivery unlocked";
   } else {
     line.textContent =
-      "Spend KSh 50,000+ for free Nairobi delivery · KSh 100,000+ for 5% off";
+      "Spend KSh 50,000+ for free Nairobi CBD delivery · KSh 100,000+ for 5% off";
   }
 }
 
@@ -539,13 +540,13 @@ function showCheckout() {
   if (wantDeliver) {
     if (nairobi && nairobi.checked && data.subtotal >= 50000) {
       delivery = 0;
-      deliveryText = "Delivery in Nairobi - free";
+      deliveryText = "Delivery in Nairobi CBD - free";
     } else if (nairobi && nairobi.checked) {
       delivery = 1500;
-      deliveryText = "Delivery in Nairobi - " + formatPrice(1500);
+      deliveryText = "Delivery in Nairobi CBD- " + formatPrice(1500);
     } else {
       delivery = 2500;
-      deliveryText = "Delivery outside Nairobi - " + formatPrice(2500);
+      deliveryText = "Delivery outside Nairobi CBD - " + formatPrice(2500);
     }
   }
 
