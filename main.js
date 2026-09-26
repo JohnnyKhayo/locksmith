@@ -1,4 +1,3 @@
-
 const API = "http://localhost:3001/api/products";
 
 let allProducts = [];
@@ -8,7 +7,6 @@ function formatPrice(price) {
 }
 
 // catalogue: cards, filters, fetch, product detail
-
 
 function productCard(product) {
   const soldOut = product.stock <= 0;
@@ -49,7 +47,7 @@ function showProducts() {
   if (!all) return;
 
   const search = document.querySelector("#search-input");
-   const series = document.querySelector("#series-select");
+  const series = document.querySelector("#series-select");
   const sort = document.querySelector("#sort-select");
   const inStock = document.querySelector("#in-stock-only");
 
@@ -103,7 +101,8 @@ async function loadProducts() {
   } catch (error) {
     console.error(error);
     if (status) {
-      status.textContent = "Could not load products. Start the API: node server.js";
+      status.textContent =
+        "Could not load products. Start the API: node server.js";
     }
   }
 }
@@ -118,7 +117,7 @@ if (series) series.addEventListener("change", showProducts);
 if (sort) sort.addEventListener("change", showProducts);
 if (inStock) inStock.addEventListener("change", showProducts);
 
-// Read ?search= and ?series= so h/ftr links pre-fill the filters
+// Read ?search= and ?series= so header/ftr links pre-fill the filters
 const params = new URLSearchParams(window.location.search);
 if (search) {
   const searchWord = params.get("search");
@@ -129,8 +128,6 @@ if (series) {
   if (seriesWord) series.value = seriesWord;
 }
 
-
-
 async function loadOneProduct() {
   const box = document.querySelector("#product-detail");
   if (!box) return;
@@ -140,7 +137,6 @@ async function loadOneProduct() {
     box.innerHTML = "<p>No product selected.</p>";
     return;
   }
-
 
   try {
     const response = await fetch(API);
@@ -221,23 +217,31 @@ if (countrySelect) {
 }
 
 // Open now/closed.
- function showOpenHours() {
+function showOpenHours() {
   const status = document.querySelector("#open-status");
   if (!status) return;
-       const now = new Date();
+  const now = new Date();
   const eatHour = now.getUTCHours() + 3;
   const day = now.getUTCDay();
   const open = day >= 1 && day <= 6 && eatHour >= 7 && eatHour < 18;
-  status.textContent = open ? "Open now" : "Closed, we reply next business day";
+  
+  if (open) {
+    status.textContent = "Open now";
+    status.style.color = "rgb(46, 125, 50)";
+  } 
+  else{
+    status.textContent = "Closed, we reply next business day";
+    status.style.color = "rgb(211, 47, 47)";
+  }
 }
 showOpenHours();
 
 function setCookie(name, value, days) {
   const date = new Date();
   date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
-  document.cookie = name + "=" + value + ";expires=" + date.toUTCString() + ";path=/";
+  document.cookie =
+    name + "=" + value + ";expires=" + date.toUTCString() + ";path=/";
 }
-
 
 function getCookie(name) {
   const cookies = document.cookie.split(";");
@@ -270,7 +274,7 @@ if (denyBtn) {
   });
 }
 
-// Enter in the header box t All Products with ?search= HEADER
+// in the header box t All Products with ?search= HEADER
 const headerSearch = document.querySelector("#header-search");
 if (headerSearch) {
   headerSearch.addEventListener("keydown", function (event) {
@@ -287,7 +291,7 @@ function getCart() {
   return saved ? JSON.parse(saved) : [];
 }
 
-// Money in bg: price x qty for every line.
+// Money in cart: price x qty for every line.
 function cartSubtotal(cart) {
   let sum = 0;
   for (let i = 0; i < cart.length; i++) {
@@ -329,13 +333,25 @@ function showCart() {
     const line = item.price * item.qty;
     html +=
       "<div class='mb-3'>" +
-      "<p>" + item.name + "</p>" +
-      "<p class='text-sm'>" +
-      formatPrice(item.price) + " x " + item.qty + " = " + formatPrice(line) +
+      "<p>" +
+      item.name +
       "</p>" +
-      "<button type='button' class='qty-minus border px-2' data-id='" + item.id + "'>-</button> " +
-       "<button type='button' class='qty-plus border px-2' data-id='" + item.id + "'>+</button> " +
-      "<button type='button' class='qty-remove border px-2' data-id='" + item.id + "'>Remove</button>" +
+      "<p class='text-sm'>" +
+      formatPrice(item.price) +
+      " x " +
+      item.qty +
+      " = " +
+      formatPrice(line) +
+      "</p>" +
+      "<button type='button' class='qty-minus border px-2' data-id='" +
+      item.id +
+      "'>-</button> " +
+      "<button type='button' class='qty-plus border px-2' data-id='" +
+      item.id +
+      "'>+</button> " +
+      "<button type='button' class='qty-remove border px-2' data-id='" +
+      item.id +
+      "'>Remove</button>" +
       "</div>";
   }
   list.innerHTML = html;
@@ -346,9 +362,11 @@ function showCart() {
     if (sum >= 100000) {
       offer.textContent = "5% off unlocked. Free Nairobi delivery unlocked.";
     } else if (sum >= 50000) {
-      offer.textContent = "Free Nairobi delivery unlocked. Add more for 5% off.";
+      offer.textContent =
+        "Free Nairobi delivery unlocked. Add more for 5% off.";
     } else {
-      offer.textContent = "Add " + formatPrice(50000 - sum) + " more for free Nairobi delivery.";
+      offer.textContent =
+        "Add " + formatPrice(50000 - sum) + " more for free Nairobi delivery.";
     }
   }
 }
@@ -390,7 +408,12 @@ function addToCart(id) {
   if (found) {
     found.qty = found.qty + 1;
   } else {
-    cart.push({ id: product.id, name: product.name, price: product.price, qty: 1 });
+    cart.push({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      qty: 1,
+    });
   }
   saveCart(cart);
 }
@@ -404,18 +427,23 @@ function changeQty(id, amount) {
   if (!found) return;
   found.qty = found.qty + amount;
   if (found.qty <= 0) {
-    saveCart(cart.filter(function (item) {
-      return String(item.id) !== String(id);
-    }));
+    saveCart(
+      cart.filter(function (item) {
+        return String(item.id) !== String(id);
+      }),
+    );
     return;
   }
   saveCart(cart);
 }
 
 function removeItem(id) {
-  saveCart(getCart().filter(function (item) {
-    return String(item.id) !== String(id);
-  }));
+  if (!window.confirm("Are you sure you want to remove this item?")) return;
+  saveCart(
+    getCart().filter(function (row) {
+      return String(row.id) !== String(id);
+    }),
+  );
 }
 
 // a listener for Add to cart and drawer buttons (class names).
@@ -423,10 +451,10 @@ document.addEventListener("click", function (event) {
   if (event.target.classList.contains("add-cart-btn")) {
     addToCart(event.target.getAttribute("data-id"));
   }
-    if (event.target.classList.contains("qty-plus")) {
+  if (event.target.classList.contains("qty-plus")) {
     changeQty(event.target.getAttribute("data-id"), 1);
   }
-   if (event.target.classList.contains("qty-minus")) {
+  if (event.target.classList.contains("qty-minus")) {
     changeQty(event.target.getAttribute("data-id"), -1);
   }
   if (event.target.classList.contains("qty-remove")) {
@@ -464,7 +492,7 @@ function cartTotals() {
     cart: cart,
     subtotal: subtotal,
     discount: discount,
-    afterDiscount: subtotal - discount
+    afterDiscount: subtotal - discount,
   };
 }
 
@@ -496,7 +524,11 @@ function showCheckout() {
     const item = data.cart[i];
     html +=
       "<p class='mb-2'>" +
-      item.name + " x " + item.qty + " - " + formatPrice(item.price * item.qty) +
+      item.name +
+      " x " +
+      item.qty +
+      " - " +
+      formatPrice(item.price * item.qty) +
       "</p>";
   }
   list.innerHTML = html;
@@ -525,7 +557,8 @@ function showCheckout() {
   }
   if (deliveryBox) deliveryBox.textContent = deliveryText;
   if (totalBox) {
-    totalBox.textContent = "To pay: " + formatPrice(data.afterDiscount + delivery);
+    totalBox.textContent =
+      "To pay: " + formatPrice(data.afterDiscount + delivery);
   }
 }
 
@@ -560,8 +593,15 @@ if (checkoutPage) {
       }
       localStorage.setItem("lastOrder", JSON.stringify(data.cart));
       saveCart([]);
-      if (msg) msg.textContent = "Order placed.";
+      if (msg) {
+        msg.textContent =
+          "Order successfully placed! A confirmation email with your pickup/delivery tracking and receipt has been sent to your email.";
+        msg.style.color = "rgb(0, 128, 0)";
+      }
       showCheckout();
+      setTimeout(function () {
+        window.location.href = "ourproducts.html";
+      }, 2500);
     });
   }
 }
@@ -636,7 +676,7 @@ if (contactForm) {
       email: document.querySelector("#email").value.trim(),
       phone: document.querySelector("#phone").value.trim(),
       subject: document.querySelector("#subject").value,
-      comment: document.querySelector("#comment").value.trim()
+      comment: document.querySelector("#comment").value.trim(),
     };
 
     // No real email server..
@@ -646,6 +686,7 @@ if (contactForm) {
       sendBtn.textContent = "Send";
       contactForm.reset();
       if (okBox) okBox.textContent = "Message sent. We will get back to you.";
+      (okBox).style.color ="rgb(0, 128, 0)" 
     }, 1500);
   });
 }
@@ -723,17 +764,29 @@ if (registerForm) {
     }
 
     const users = getUsers();
-    if (users.find(function (user) { return user.email === email; })) {
-      setMsg("reg-msg", "That email is already registered. Please login.", false);
+    if (
+      users.find(function (user) {
+        return user.email === email;
+      })
+    ) {
+      setMsg(
+        "reg-msg",
+        "That email is already registered. Please login.",
+        false,
+      );
       return;
     }
 
     users.push({ name: name, email: email, password: password });
     localStorage.setItem("users", JSON.stringify(users));
     registerForm.reset();
-    setMsg("reg-msg", "Account created. Save your email and password. You can sign in now.", true);
+    setMsg(
+      "reg-msg",
+      "Account created. Save your email and password. You can sign in now.",
+      true,
+    );
 
-    // After the green message, show the Sign in card.
+    // registered successful, show the Sign in card.
     setTimeout(function () {
       if (registerView && loginView) {
         registerView.style.display = "none";
@@ -764,9 +817,13 @@ if (loginForm) {
 
     localStorage.setItem(
       "currentUser",
-      JSON.stringify({ name: user.name || "", email: user.email })
+      JSON.stringify({ name: user.name || "", email: user.email }),
     );
-    setMsg("login-msg", user.name ? "Welcome " + user.name : "Login successful.", true);
+    setMsg(
+      "login-msg",
+      user.name ? "Welcome " + user.name : "Login successful.",
+      true,
+    );
     setTimeout(afterLoginGo, 3000);
   });
 }
@@ -782,6 +839,7 @@ function showAuthHeader() {
   const welcomeUser = document.querySelector("#welcome-user");
   const user = getCurrentUser();
 
+  // logout
   if (link) {
     if (user) {
       link.textContent = "Logout";
@@ -796,8 +854,10 @@ function showAuthHeader() {
       link.href = "login.html";
     }
   }
-  if (hello && user && user.name) hello.textContent = "Hello welcome " + user.name;
-  if (welcomeUser) welcomeUser.textContent = user && user.name ? "Hello " + user.name : "";
+  if (hello && user && user.name)
+    hello.textContent = "Hello welcome " + user.name;
+  if (welcomeUser)
+    welcomeUser.textContent = user && user.name ? "Hello " + user.name : "";
 }
 showAuthHeader();
 

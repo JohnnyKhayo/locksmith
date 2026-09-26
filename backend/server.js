@@ -6,7 +6,6 @@ const app = express();
 const PORT = 3001;
 
 app.use(cors())
-app.use(express.json())
 
 const lockProducts = [
   {
@@ -200,7 +199,7 @@ const lockProducts = [
 
 
 app.get("/api/products", (req, res) => {
-  res.json(lockProducts);
+    res.json(lockProducts);
 });
 
 
