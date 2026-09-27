@@ -88,7 +88,6 @@ In another terminal, open the frontend with Live Server (port 5502 or similar).
 Keep both running. If the API is off, the grids show “Start the API”.
 
 ## How the project looks
-## How the project looks
 ![Locksmith Screenshot 1](images/locksmith.1.png)
 ![Locksmith Screenshot 2](images/locksmith.2.png)
 

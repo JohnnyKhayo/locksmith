@@ -31,6 +31,8 @@ function productCard(product) {
   `;
 }
 
+// Home: only featured. All Products: search, series, sort, in stock
+
 function showProducts() {
   const featured = document.querySelector("#featured-grid");
   const all = document.querySelector("#product-grid");
@@ -92,6 +94,7 @@ function showProducts() {
   }
 }
 
+// GET the list from Express. Store it, then draw
 async function loadProducts() {
   const status = document.querySelector("[data-product-status]");
   try {
@@ -118,7 +121,7 @@ if (series) series.addEventListener("change", showProducts);
 if (sort) sort.addEventListener("change", showProducts);
 if (inStock) inStock.addEventListener("change", showProducts);
 
-// Read ?search= and ?series= so header/ftr links pre-fill the filters
+// Header search and footer series links land here as ?search= and ?series=
 const params = new URLSearchParams(window.location.search);
 if (search) {
   const searchWord = params.get("search");
@@ -128,6 +131,8 @@ if (series) {
   const seriesWord = params.get("series");
   if (seriesWord) series.value = seriesWord;
 }
+
+// product.html only. Reads ?id=, fetches the list, draws one lock
 
 async function loadOneProduct() {
   const box = document.querySelector("#product-detail");
@@ -179,9 +184,10 @@ async function loadOneProduct() {
   }
 }
 
-// Site tools: theme, country, hours, cookies, header search
+// SITE TOOLS: theme, country, hours, cookies, header search
 
-// Light / Dark. Class goes on body. Choice saved so refresh keeps it.
+// Light/Dark. Class goes on body. Choice saved so refresh keeps it.
+
 function setTheme(name) {
   if (name === "dark") {
     document.body.classList.add("dark-theme");
@@ -286,6 +292,11 @@ if (headerSearch) {
   });
 }
 
+// CART
+// Add, change qty, remove, badge, drawer
+// Saved in localStorage
+// KSh 50,000+ free Nairobi CBD delivery & KSh 5% off
+
 // Cart: add, qty, remove, badge, drawer, localStorage
 function getCart() {
   const saved = localStorage.getItem("cart");
@@ -301,7 +312,8 @@ function cartSubtotal(cart) {
   return sum;
 }
 
-// Number on the cart icon.
+// Badge on the bag icon(#NUMBER OF PCS)
+
 function showCartCount() {
   const countBox = document.querySelector("#cart-count");
   if (!countBox) return;
@@ -313,7 +325,7 @@ function showCartCount() {
   countBox.textContent = total;
 }
 
-// + /- Remove, subtotal, offer text.(draws the drawer)
+// Fill the drawer: lines, + / - / Remove, subtotal, offer text
 function showCart() {
   const list = document.querySelector("#cart-list");
   const offer = document.querySelector("#cart-offer");
@@ -387,7 +399,8 @@ function showOfferLine() {
   }
 }
 
-// Write cart, then refresh badge, drawer, and offer line.
+// Save the array, then redraw badge, drawer, and offer line
+
 function saveCart(cart) {
   localStorage.setItem("cart", JSON.stringify(cart));
   showCartCount();
@@ -395,7 +408,8 @@ function saveCart(cart) {
   showOfferLine();
 }
 
-// Same id again → qty + 1. New id → new line. Needs allProducts from fetch.
+// Same lock again: qty + 1. New lock: new line. Needs allProducts from fetch
+
 function addToCart(id) {
   const product = allProducts.find(function (item) {
     return String(item.id) === String(id);
@@ -447,7 +461,7 @@ function removeItem(id) {
   );
 }
 
-// a listener for Add to cart and drawer buttons (class names).
+// a one listener for grid buttons and drawer buttons (class names)
 document.addEventListener("click", function (event) {
   if (event.target.classList.contains("add-cart-btn")) {
     addToCart(event.target.getAttribute("data-id"));
@@ -483,7 +497,9 @@ showCartCount();
 showCart();
 showOfferLine();
 
-// Checkout (simulated). pickup or deliver
+// CHECKOUT (simulated)
+// Pickup or deliver. Nairobi CBD + 50k = free delivery
+
 
 function cartTotals() {
   const cart = getCart();
@@ -534,7 +550,8 @@ function showCheckout() {
   }
   list.innerHTML = html;
 
-  // Pickup = 0. Nairobi + 50k+ = 0.
+    // Pickup = 0. Nairobi CBD + 50k+ = 0. Under 50k = 1500. Other town = 2500
+
   let delivery = 0;
   let deliveryText = "Pickup - no delivery fee";
   if (wantDeliver) {
@@ -585,6 +602,8 @@ if (checkoutPage) {
         if (msg) msg.textContent = "Your cart is empty.";
         return;
       }
+
+      // Recalculate so the page total matches the cart
 
       const paid = data.afterDiscount;
       const check = cartSubtotal(data.cart) - data.discount;
@@ -680,7 +699,8 @@ if (contactForm) {
       comment: document.querySelector("#comment").value.trim(),
     };
 
-    // No real email server..
+    // No real mail server. Wait 1.5s, then store the enquiry
+
     setTimeout(function () {
       localStorage.setItem("enquiry", JSON.stringify(enquiry));
       sendBtn.disabled = false;
@@ -692,11 +712,11 @@ if (contactForm) {
   });
 }
 
-// Account
-// Users live in localStorage
-// Browse and add to cart with no login.
-// Checkout with no currentUser t0> login.html?next=checkout
+// ACCOUNT
+// Users and currentUser live in localStorage
+// Shop without login. Checkout without a user → login.html?next=checkout
 
+// After login: checkout visitors go back to checkout & everyone else goes #Home
 function getUsers() {
   const saved = localStorage.getItem("users");
   return saved ? JSON.parse(saved) : [];
@@ -737,6 +757,8 @@ if (showRegisterBtn && registerView && loginView) {
     registerView.style.display = "block";
   });
 }
+
+// here Create account. Save { name, email, password } in the users array
 
 const registerForm = document.querySelector("#register-form");
 if (registerForm) {
@@ -797,6 +819,7 @@ if (registerForm) {
   });
 }
 
+// sign in. email must exist. Password must match exactly
 const loginForm = document.querySelector("#login-form");
 if (loginForm) {
   loginForm.addEventListener("submit", function (event) {
@@ -825,11 +848,12 @@ if (loginForm) {
       user.name ? "Welcome " + user.name : "Login successful.",
       true,
     );
-    setTimeout(afterLoginGo, 3000);
+    setTimeout(afterLoginGo, 3500);
   });
 }
 
-// Checkout page + not logged in → must sign in first.
+// Checkout page and no currentUser → must sign in first
+
 if (document.querySelector("#checkout-list") && !getCurrentUser()) {
   window.location.href = "login.html?next=checkout";
 }
