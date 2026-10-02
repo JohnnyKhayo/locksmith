@@ -404,7 +404,8 @@ function showOfferLine() {
 function saveCart(cart) {
   localStorage.setItem("cart", JSON.stringify(cart));
   showCartCount();
-  showCart();
+    showCart();
+  
   showOfferLine();
 }
 
@@ -879,10 +880,8 @@ function showAuthHeader() {
       link.href = "login.html";
     }
   }
-  if (hello && user && user.name)
-    hello.textContent = "Hello welcome " + user.name;
-  if (welcomeUser)
-    welcomeUser.textContent = user && user.name ? "Hello " + user.name : "";
+  if (hello && user && user.name) hello.textContent = "Hello welcome " + user.name;
+  if (welcomeUser) welcomeUser.textContent = user && user.name ? "Hello " + user.name : "";
 }
 showAuthHeader();
 

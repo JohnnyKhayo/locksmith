@@ -15,7 +15,7 @@ const lockProducts = [
     series: "Wood",
     price: 10100,
     image: "images/smith.1.webp",
-    stock: 800,
+    stock: 0,
     featured: true,
     description: "This hexagonal handle is made for wooden doors that need a clear focal point. The grip feels firm, the latch is straightforward to live with, and it suits main rooms where guests actually see the door."
   },
